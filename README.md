@@ -5,12 +5,14 @@
 Prerequisites:
 - running dnsmasq; refer configs/dnsmasq/pxe.conf for configuration your custom config in /etc/dnsmasq.d/yourconf.conf
 - running http server pointing to the http-folder, or it's symbolic link; I'm using a goStatic docker container for this. A compose sample is placed in configs/compose/
-- if you have a lot of deployments, it's recommended to use a chached proxy like nesus3 like this repo. Peek into configs/compose for a docker deployment. The nexus-setup ist documented in  configs/nexus-config.yaml
+- if you have a lot of deployments, it's recommended to use a cached proxy like nesus3 like this repo. Peek into configs/compose for a docker deployment. The nexus-setup ist documented in  configs/nexus-config.yaml
 
 Recommendations:
 - link via `ln -s` the folders http an tftp to your favourite server folder; here: /srv
 - be aware of struggling with existing DHCP-servers and dnsmasq in the same network. This is not a part of this topic: simply search online for this. 
 Just run getRequirements.sh to fullify all required structures and files to make a netboot for ubuntu jammy happen.
+
+Run getRequirements.sh to fullyfy all directories and files in the project folder after initial clone
 
 Target directory structure: 
 
