@@ -1,0 +1,9 @@
+*.0
+*.iso
+*.lst
+*.pf2
+*.c32
+*.efi*
+initrd
+vmlinuz
+tmp

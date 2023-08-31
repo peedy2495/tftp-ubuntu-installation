@@ -1,0 +1,81 @@
+blob-stores:
+  ubuntu-jammy:
+    type: file
+    path: /nexus-data/blobs/
+    soft-quota: false
+
+  ubuntu-releases:
+    type: file
+    path: /nexus-data/blobs/
+    soft-quota: false
+
+  google:
+    type: file
+    path: /nexus-data/blobs/
+    soft-quota: false
+
+repositories:
+  apt:
+    proxy:
+      ubuntu-jammy:
+        distribution: jammy
+        remote-storage: http://de.archive.ubuntu.com/ubuntu
+        blob-store: ubuntu-jammy
+        auto-blocking-enabled: true
+        strict-content-type-validation: true
+        cleanup-policies:
+
+      ubuntu-jammy-backports:
+        distribution: jammy-backports
+        remote-storage: http://de.archive.ubuntu.com/ubuntu
+        blob-store: ubuntu-jammy
+        auto-blocking-enabled: true
+        strict-content-type-validation: true
+        cleanup-policies:
+
+      ubuntu-jammy-updates:
+        distribution: jammy-updates
+        remote-storage: http://de.archive.ubuntu.com/ubuntu
+        blob-store: ubuntu-jammy
+        auto-blocking-enabled: true
+        strict-content-type-validation: true
+        cleanup-policies:
+
+      ubuntu-jammy-security:
+        distribution: jammy-security
+        remote-storage: http://de.archive.ubuntu.com/ubuntu
+        blob-store: ubuntu-jammy
+        auto-blocking-enabled: true
+        strict-content-type-validation: true
+        cleanup-policies:
+
+      ubuntu-jammy-ppa-mozillateam:
+        distribution: jammy
+        remote-storage: https://ppa.launchpadcontent.net/mozillateam/ppa/ubuntu
+        blob-store: ubuntu-jammy
+        auto-blocking-enabled: true
+        strict-content-type-validation: true
+        cleanup-policies:
+        
+      google-chrome:
+        distribution: stable
+        remote-storage: http://dl.google.com/linux/chrome/deb
+        blob-store: google
+        auto-blocking-enabled: true
+        strict-content-type-validation: true
+        cleanup-policies:
+  raw:
+    proxy:
+      ubuntu-jammy-uefi:
+        remote-storage: http://archive.ubuntu.com/ubuntu/dists/jammy/main/uefi/grub2-amd64/current
+        blob-store: ubuntu-jammy
+        auto-blocking-enabled: true
+        strict-content-type-validation: true
+        cleanup-policies:
+
+      ubuntu-releases:
+        remote-storage: https://releases.ubuntu.com/releases
+        blob-store: ubuntu-releases
+        auto-blocking-enabled: true
+        strict-content-type-validation: true
+        cleanup-policies:

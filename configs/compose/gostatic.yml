@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  webserver:
+    image: pierrezemb/gostatic:latest
+    restart: always
+    ports:
+    - "8080:8043"
+    volumes:
+    - /srv/http:/srv/http
