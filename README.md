@@ -12,7 +12,7 @@ Recommendations:
 - be aware of struggling with existing DHCP-servers and dnsmasq in the same network. This is not a part of this topic: simply search online for this. 
 Just run getRequirements.sh to fullify all required structures and files to make a netboot for ubuntu jammy happen.
 
-Run getRequirements.sh to fullyfy all directories and files in the project folder after initial clone
+Run tftp/getRequirements.sh to fullyfy all directories and files in the project folder after initial clone
 
 Target directory structure: 
 
