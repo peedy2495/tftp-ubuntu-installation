@@ -6,23 +6,23 @@ autoinstall:
   keyboard:
     layout: de
 
-  # add mozilla package source
+  # Add mozilla package source
   apt:
     preserve_sources_list: false
     sources_list: |
-      deb http://192.168.123.180:8081/repository/ubuntu-jammy jammy main restricted
-      deb http://192.168.123.180:8081/repository/ubuntu-jammy-updates jammy-updates main restricted
-      deb http://192.168.123.180:8081/repository/ubuntu-jammy jammy universe
-      deb http://192.168.123.180:8081/repository/ubuntu-jammy-updates jammy-updates universe
-      deb http://192.168.123.180:8081/repository/ubuntu-jammy jammy multiverse
-      deb http://192.168.123.180:8081/repository/ubuntu-jammy-updates jammy-updates multiverse
-      deb http://192.168.123.180:8081/repository/ubuntu-jammy jammy-backports main restricted universe multiverse
-      deb http://192.168.123.180:8081/repository/ubuntu-jammy-security jammy-security main restricted
-      deb http://192.168.123.180:8081/repository/ubuntu-jammy-security jammy-security universe
-      deb http://192.168.123.180:8081/repository/ubuntu-jammy-security jammy-security multiverse
+      deb http://ubuntu-proxy:8081/repository/ubuntu-jammy jammy main restricted
+      deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-updates jammy-updates main restricted
+      deb http://ubuntu-proxy:8081/repository/ubuntu-jammy jammy universe
+      deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-updates jammy-updates universe
+      deb http://ubuntu-proxy:8081/repository/ubuntu-jammy jammy multiverse
+      deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-updates jammy-updates multiverse
+      deb http://ubuntu-proxy:8081/repository/ubuntu-jammy jammy-backports main restricted universe multiverse
+      deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-security jammy-security main restricted
+      deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-security jammy-security universe
+      deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-security jammy-security multiverse
     sources:
       mozilla-ppa:
-        source: deb http://192.168.123.180:8081/repository/ubuntu-jammy-ppa-mozillateam jammy main
+        source: deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-ppa-mozillateam jammy main
         key: |
           -----BEGIN PGP PUBLIC KEY BLOCK-----
           
@@ -177,7 +177,7 @@ autoinstall:
           =JViP
           -----END PGP PUBLIC KEY BLOCK-----
       google-chrome:
-        source: deb [arch=amd64] http://192.168.123.180:8081/repository/google-chrome/ stable main
+        source: deb [arch=amd64] http://ubuntu-proxy:8081/repository/google-chrome/ stable main
         key: |
           -----BEGIN PGP PUBLIC KEY BLOCK-----
           Version: GnuPG v1.4.2.2 (GNU/Linux)
@@ -412,11 +412,6 @@ autoinstall:
           =OrhN
           -----END PGP PUBLIC KEY BLOCK-----
 
-  # This adds the default ubuntu-desktop packages to the system.
-  # Any desired additional packages may also be listed here.
-  packages:
-    - ubuntu-desktop
-
   # User creation can occur in one of 3 ways:
   # 1. Create a user using this `identity` section.
   # 2. Create users as documented in cloud-init inside the user-data section,
@@ -428,8 +423,9 @@ autoinstall:
     username: ubuntu
     # A password hash is needed. `mkpasswd --method=SHA-512` can help.
     # mkpasswd can be found in the package 'whois'
-    password: '$6$zlRJMmgbf2VegpBX$ArZws/Jq8GOv22gpSpSonzAnA.iEa.lnKOy5ifTYURU4BcdHXT0ZEdHwgHR.Vq67UbiPXmDOSf2xsbtQJrrkc1'
-    hostname: ubuntu-desktop
+    # here: 'ChangeMe' ... for testing
+    password: '$6$94XdJRnQqQTIkiqy$pMlmI8ouqW3GR2P8nYBAuFGItubjCjo7XZzVOkMN13T3u43gYZSAWUZZjqGFX86KAQ7OtB0kXiOflBedl5zlJ0'
+    hostname: premature
 
   storage:
     swap:
@@ -490,9 +486,16 @@ autoinstall:
         grub_device: false
         type: partition
         id: sys-part-3
+
+      - id: LVM_crypt
+        type: dm_crypt
+        volume: sys-part-3
+        preserve: false
+        # here: 'ChangeMe' ... for testing
+        key: 'ChangeMe'
+
       - name: vg-system
-        devices:
-        - sys-part-3
+        devices: [LVM_crypt]
         preserve: false
         type: lvm_volgroup
         id: lvm_volgroup-0
@@ -670,6 +673,16 @@ autoinstall:
   # Ubuntu Desktop uses the hwe flavor kernel by default.
   early-commands:
     - echo 'linux-generic-hwe-22.04' > /run/kernel-meta-package
+    
+    # Mount temporary ramdisk for additional data
+    - mount -t tmpfs -o size=512M tmpfs /mnt
+    
+    # Pull additional data for installation process
+    - wget -P /mnt -np -nd -l2 -r http://$(cat /proc/cmdline |awk -F' ' '{print $4}'|awk -F'/' '{print $3}')/autoinstall/jammy/assets/
+    - chmod +x /mnt/*.sh
+
+    # Set ubuntu-proxy in hosts
+    - /mnt/setHosts.sh /etc/hosts
 
   # The live-server ISO does not contain some of the required packages,
   # such as ubuntu-desktop or the hwe kernel (or most of their depdendencies).
@@ -677,16 +690,10 @@ autoinstall:
   # proxy: http://192.168.0.1:3142
 
   late-commands:
+    # Use repo proxy for pulling packages
+    - /mnt/setHosts.sh /target/etc/hosts
 
-    # Mount temporary ramdisk for additional data
-    - mount -t tmpfs -o size=512M tmpfs /mnt
-
-    # Pull additional data for installation process
-    - wget -P /mnt -np -nd -l2 -r http://$(cat /proc/cmdline |awk -F' ' '{print $4}'|awk -F'/' '{print $3}')/autoinstall/jammy/assets/
-    - chmod +x /mnt/*.sh
-
-    
-    # preserve abuses and unwanted changes on additional repo sources
+    # Preserve abuses and unwanted changes on additional repo sources
     - /mnt/lockRepos.sh
 
     # Preserve abuses on vulnerable system parts
@@ -698,15 +705,12 @@ autoinstall:
       printf "network:\n  version: 2\n  renderer: NetworkManager"
       > /target/etc/netplan/01-network-manager-all.yaml
 
-    # Remove snap environment
-    - /mnt/rmSnap.sh
-
     # Remove default filesystem and related tools not used with the suggested
     # 'direct' storage layout.  These may yet be required if different
     # partitioning schemes are used.
     - >-
       curtin in-target -- apt-get remove -y
-      btrfs-progs cryptsetup* xfsprogs
+      btrfs-progs xfsprogs
 
     # Remove other packages present by default in Ubuntu Server but not
     # normally present in Ubuntu Desktop.
@@ -714,26 +718,48 @@ autoinstall:
       curtin in-target -- apt-get remove -y
       ubuntu-server ubuntu-server-minimal
       binutils byobu curl dmeventd finalrd gawk
-      kpartx mdadm ncurses-term needrestart open-iscsi openssh-server
+      kpartx mdadm ncurses-term needrestart open-iscsi
       sg3-utils ssh-import-id sssd thin-provisioning-tools vim tmux
       sosreport screen open-vm-tools motd-news-config lxd-agent-loader
       landscape-common htop git fonts-ubuntu-console ethtool
 
-    # keep logical volume manager
+    # Install desktop related patterns and packages
+    - >-
+      curtin in-target -- apt-get install -y --install-recommends
+      ubuntu-desktop
+
+    # Remove unnecessary modem manager for cellphone data
+    - curtin in-target --target=/target -- apt-get --purge -y --quiet=2 remove modemmanager
+
+    # Remove snap environment
+    - /mnt/rmSnap.sh
+
+    # Keep logical volume manager
     - curtin in-target -- apt install --reinstall -y lvm2
 
-    # (re)install desktop flavour needs
+    # (Re)install desktop flavour needs
     - curtin in-target -- apt install -y firefox-esr firefox-esr-locale-de google-chrome-stable
+
+    # Configure NetworkManager and network related system parts
+    - /mnt/setConnNM.sh
+
+    # Install bootsplash ui
+    - >-
+      curtin in-target -- apt-get install -y --install-recommends
+      plymouth
+      plymouth-label
+      plymouth-theme-spinner
+      plymouth-theme-ubuntu-text
 
     # Keep cloud-init, as it performs some of the installation on first boot.
     - curtin in-target -- apt-get install -y cloud-init
 
-    # upgrade system
-    - curtin in-target --target=/target -- unattended-upgrade -d
-
     # Finally, remove things only installed as dependencies of other things
     # we have already removed.
     - curtin in-target -- apt-get autoremove --purge -y --quiet=2
+
+    # Upgrade system
+    - curtin in-target --target=/target -- apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y upgrade
 
     # Enable the boot splash
     - >-
@@ -742,7 +768,18 @@ autoinstall:
       's/GRUB_CMDLINE_LINUX_DEFAULT=".*/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"/'
     - curtin in-target -- update-grub
 
-    # preserve kernel command-line parameters for debugging
+    # Set detailed localization
+    - ln -fs /usr/share/zoneinfo/Europe/Berlin /target/etc/localtime
+
+    # Disable bloat and too informative stuff
+    - sed -i 's/ENABLED=1/ENABLED=0/' /target/etc/default/motd-news
+    - ln -fs /dev/null /target/etc/systemd/system/motd-news.service
+    - ln -fs /dev/null /target/etc/systemd/system/motd-news.timer
+    - ln -fs /dev/null /target/etc/systemd/system/plymouth-quit-wait.service
+    - ln -fs /dev/null /target/etc/systemd/system/plymouth-start.service
+    - rm -f /target/etc/update-motd.d/10-help-text
+
+    # Preserve kernel command-line parameters for debugging
     - cat /proc/cmdline >/target/var/log/installer/cmdline
 
     # A postinstall script may optionally be used for further install
@@ -755,3 +792,22 @@ autoinstall:
   # autoinstall.
   # user-data:
   #   …
+
+  user-data:
+    disable_root: true
+    ssh_pwauth: false
+
+    users:
+      - name: ansible
+        primary_group: users
+        groups: sudo
+        lock_passwd: true
+        shell: /bin/bash
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        # dont't worry ... this ssh key will never be used in real environments ;-) 
+        ssh_authorized_keys:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINLFljoNdv6M6uKzKfkQbXGdEO/hs0zK3v9tp/v08pgo ansible@testing"
+
+    # reboot after first host initial provisioning
+    power_state:
+      mode: reboot
