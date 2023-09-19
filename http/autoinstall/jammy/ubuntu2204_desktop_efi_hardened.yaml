@@ -554,7 +554,8 @@ autoinstall:
       - path: /var/tmp
         device: lvm-format-4
         type: mount
-        options: relatime,nodev,nosuid,noexec
+        # noexec not activated, because of ansible needs
+        options: relatime,nodev,nosuid
         id: lvm-mount-4
 
       - name: lv-varlogaudit
