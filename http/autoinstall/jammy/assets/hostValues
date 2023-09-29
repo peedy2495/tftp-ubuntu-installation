@@ -3,6 +3,7 @@
 netmask="24"
 gateway="192.168.123.1"
 dns_nm="9.9.9.9;1.1.1.1"  #NetworkManager entries are separated by semicolon!
+dns="9.9.9.9,1.1.1.1"
 domain="example.org"
 ubuntu_proxy="192.168.123.180"
 

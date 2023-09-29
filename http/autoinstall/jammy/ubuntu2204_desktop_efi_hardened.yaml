@@ -418,9 +418,9 @@ autoinstall:
   #    which means this single-user identity section may be removed.
   # 3. Prompt for user configuration on first boot.  Remove this identity
   #    section and see the "Installation without a default user" section.
-  identity:
-    realname: ''
-    username: ubuntu
+  #identity:
+    realname: TempUser
+    username: temporary
     # A password hash is needed. `mkpasswd --method=SHA-512` can help.
     # mkpasswd can be found in the package 'whois'
     # here: 'ChangeMe' ... for testing
@@ -682,6 +682,9 @@ autoinstall:
     - wget -P /mnt -np -nd -l2 -r http://$(cat /proc/cmdline |awk -F' ' '{print $4}'|awk -F'/' '{print $3}')/autoinstall/jammy/assets/
     - chmod +x /mnt/*.sh
 
+    # set desired static network for this session, yet
+    #- /mnt/setConnCurr.sh
+
     # Set ubuntu-proxy in hosts
     - /mnt/setHosts.sh /etc/hosts
 
@@ -691,6 +694,9 @@ autoinstall:
   # proxy: http://192.168.0.1:3142
 
   late-commands:
+    # remove temorary user
+    - curtin in-target -- deluser --remove-home temporary
+
     # Use repo proxy for pulling packages
     - /mnt/setHosts.sh /target/etc/hosts
 
@@ -699,12 +705,6 @@ autoinstall:
 
     # Preserve abuses on vulnerable system parts
     - /mnt/modFsTab.sh
-
-    # Let NetworkManager handle network
-    - rm /target/etc/netplan/00-installer-config*yaml
-    - >-
-      printf "network:\n  version: 2\n  renderer: NetworkManager"
-      > /target/etc/netplan/01-network-manager-all.yaml
 
     # Remove default filesystem and related tools not used with the suggested
     # 'direct' storage layout.  These may yet be required if different
@@ -761,6 +761,12 @@ autoinstall:
 
     # Upgrade system
     - curtin in-target --target=/target -- apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y upgrade
+
+    # Let NetworkManager handle network
+    - rm /target/etc/netplan/00-installer-config*yaml
+    - >-
+      printf "network:\n  version: 2\n  renderer: NetworkManager"
+      > /target/etc/netplan/01-network-manager-all.yaml
 
     # Enable the boot splash
     - >-
