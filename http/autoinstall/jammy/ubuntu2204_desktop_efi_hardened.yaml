@@ -694,7 +694,7 @@ autoinstall:
   # proxy: http://192.168.0.1:3142
 
   late-commands:
-    # remove temorary user
+    # remove preinstalled temorary user
     - curtin in-target -- deluser --remove-home temporary
 
     # Use repo proxy for pulling packages
