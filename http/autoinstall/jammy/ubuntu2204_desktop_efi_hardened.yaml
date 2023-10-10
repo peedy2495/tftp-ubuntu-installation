@@ -679,7 +679,7 @@ autoinstall:
     - mount -t tmpfs -o size=512M tmpfs /mnt
     
     # Pull additional data for installation process
-    - wget -P /mnt -np -nd -l2 -r http://$(cat /proc/cmdline |awk -F' ' '{print $4}'|awk -F'/' '{print $3}')/autoinstall/jammy/assets/
+    - wget -P /mnt -r -nH --cut-dirs=3 -np http://$(cat /proc/cmdline |awk -F' ' '{print $4}'|awk -F'/' '{print $3}')/autoinstall/jammy/assets/
     - chmod +x /mnt/*.sh
 
     # set desired static network for this session, yet
@@ -725,25 +725,32 @@ autoinstall:
       sosreport screen open-vm-tools motd-news-config lxd-agent-loader
       landscape-common htop git fonts-ubuntu-console ethtool
 
+    # Remove snap environment
+    - /mnt/rmSnap.sh
+
+    # Remove unnecessary modem manager for cellphone connections
+    - curtin in-target --target=/target -- apt-get --purge -y --quiet=2 remove modemmanager
+
+    # Finally, remove things only installed as dependencies of other things
+    # we have already removed.
+    - curtin in-target -- apt-get autoremove --purge -y --quiet=2
+
+    # Upgrade system
+    #- curtin in-target --target=/target -- apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y upgrade
+
     # Install desktop related patterns and packages
     - >-
       curtin in-target -- apt-get install -y --install-recommends
-      ubuntu-desktop
+      ubuntu-desktop firefox- modemmanager-
 
-    # Remove unnecessary modem manager for cellphone data
-    - curtin in-target --target=/target -- apt-get --purge -y --quiet=2 remove modemmanager
-
-    # Remove snap environment
-    - /mnt/rmSnap.sh
+    # Install or get proprietary graphic-drivers from ppa
+    - /mnt/setGraphics.sh
 
     # Keep logical volume manager
     - curtin in-target -- apt install --reinstall -y lvm2
 
     # (Re)install desktop flavour needs
     - curtin in-target -- apt install -y firefox-esr firefox-esr-locale-de google-chrome-stable
-
-    # Configure NetworkManager and network related system parts
-    - /mnt/setConnNM.sh
 
     # Install bootsplash ui
     - >-
@@ -756,18 +763,6 @@ autoinstall:
     # Keep cloud-init, as it performs some of the installation on first boot.
     - curtin in-target -- apt-get install -y cloud-init
 
-    # Finally, remove things only installed as dependencies of other things
-    # we have already removed.
-    - curtin in-target -- apt-get autoremove --purge -y --quiet=2
-
-    # Upgrade system
-    - curtin in-target --target=/target -- apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y upgrade
-
-    # Let NetworkManager handle network
-    - rm /target/etc/netplan/00-installer-config*yaml
-    - >-
-      printf "network:\n  version: 2\n  renderer: NetworkManager"
-      > /target/etc/netplan/01-network-manager-all.yaml
 
     # Enable the boot splash
     - >-
@@ -789,6 +784,15 @@ autoinstall:
 
     # Preserve kernel command-line parameters for debugging
     - cat /proc/cmdline >/target/var/log/installer/cmdline
+
+    # Configure NetworkManager and network related system parts
+    - /mnt/setConnNM.sh
+
+    # Let NetworkManager handle network
+    - rm /target/etc/netplan/00-installer-config*yaml
+    - >-
+      printf "network:\n  version: 2\n  renderer: NetworkManager"
+      > /target/etc/netplan/01-network-manager-all.yaml
 
     # A postinstall script may optionally be used for further install
     # customization. Deploy this postinstall.sh script on the webserver.

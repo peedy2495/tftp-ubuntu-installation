@@ -13,9 +13,10 @@ done
 
 conn_mac_should=${hosts[$host]}
 conn_ip_should=${IPs[$host]}
-conn_ip=`hostname -I`
-conn_mac=`ip link show $conn_dev|grep ether|awk {'print $2'}`
+conn_ip=`hostname -I | awk '{print $1}'`
+
 conn_dev=`ip addr | grep $conn_ip | awk '{print $NF}'`
+conn_mac=`ip link show $conn_dev|grep ether|awk {'print $2'}`
 
 # be shure, that the desired interface is really connected
 if [ "$conn_mac_should" = "$conn_mac" ]; then
