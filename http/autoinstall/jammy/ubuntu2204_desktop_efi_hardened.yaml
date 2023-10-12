@@ -15,7 +15,7 @@ autoinstall:
       deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-updates jammy-updates universe
       deb http://ubuntu-proxy:8081/repository/ubuntu-jammy jammy multiverse
       deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-updates jammy-updates multiverse
-      deb http://ubuntu-proxy:8081/repository/ubuntu-jammy jammy-backports main restricted universe multiverse
+      deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-backports jammy-backports main restricted universe multiverse
       deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-security jammy-security main restricted
       deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-security jammy-security universe
       deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-security jammy-security multiverse
@@ -418,9 +418,9 @@ autoinstall:
   #    which means this single-user identity section may be removed.
   # 3. Prompt for user configuration on first boot.  Remove this identity
   #    section and see the "Installation without a default user" section.
-  #identity:
-    realname: TempUser
-    username: temporary
+  identity:
+    realname: temporaray 
+    username: temporaray
     # A password hash is needed. `mkpasswd --method=SHA-512` can help.
     # mkpasswd can be found in the package 'whois'
     # here: 'ChangeMe' ... for testing
@@ -794,16 +794,15 @@ autoinstall:
       printf "network:\n  version: 2\n  renderer: NetworkManager"
       > /target/etc/netplan/01-network-manager-all.yaml
 
-    # A postinstall script may optionally be used for further install
-    # customization. Deploy this postinstall.sh script on the webserver.
-    # - wget -O /target/postinstall.sh http://192.168.0.2/postinstall.sh
-    # - curtin in-target -- bash /postinstall.sh
-    # - rm /target/postinstall.s
-  # Additional cloud-init configuration affecting the target
-  # system can be supplied underneath a user-data section inside of
-  # autoinstall.
-  # user-data:
-  #   …
+    # preserve using local users for using LDAP, only
+    - cp /mnt/rmLocalUsers /target/usr/local/sbin/
+    - chmod 0700  /target/usr/local/sbin/rmLocalUsers
+    - cp /mnt/rmLocalUsers.service /target/etc/systemd/system/
+    - chmod 0600  /target/etc/systemd/system/rmLocalUsers.service
+    - curtin in-target -- systemctl enable rmLocalUsers.service
+
+
+  # Additional cloud-init section for final finish
 
   user-data:
     disable_root: true
@@ -811,6 +810,7 @@ autoinstall:
 
     users:
       - name: ansible
+        uid: 64001
         primary_group: users
         groups: sudo
         lock_passwd: true

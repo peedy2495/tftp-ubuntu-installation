@@ -4,7 +4,7 @@ deb http://ubuntu-proxy:8081/repository/ubuntu-jammy jammy universe
 deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-updates jammy-updates universe
 deb http://ubuntu-proxy:8081/repository/ubuntu-jammy jammy multiverse
 deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-updates jammy-updates multiverse
-deb http://ubuntu-proxy:8081/repository/ubuntu-jammy jammy-backports main restricted universe multiverse
+deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-backports jammy-backports main restricted universe multiverse
 deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-security jammy-security main restricted
 deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-security jammy-security universe
 deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-security jammy-security multiverse

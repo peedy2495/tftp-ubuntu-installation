@@ -49,6 +49,7 @@ method=disabled\n\
     curtin in-target --target=/target -- sed -i "s/premature/$host.$domain/" /etc/hostname
     curtin in-target --target=/target -- sed -i "s/premature/$host.$domain/" /etc/hosts
     printf "Domains=$domain" >> /target/etc/systemd/resolved.conf
+    curtin in-target --target=/target -- systemctl disable systemd-networkd-wait-online.service
 else
     echo "found desired interface $con_mac, but it's not the primary connected one!"
 fi
