@@ -735,9 +735,6 @@ autoinstall:
     # we have already removed.
     - curtin in-target -- apt-get autoremove --purge -y --quiet=2
 
-    # Upgrade system
-    #- curtin in-target --target=/target -- apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y upgrade
-
     # Install desktop related patterns and packages
     - >-
       curtin in-target -- apt-get install -y --install-recommends
@@ -762,7 +759,6 @@ autoinstall:
 
     # Keep cloud-init, as it performs some of the installation on first boot.
     - curtin in-target -- apt-get install -y cloud-init
-
 
     # Enable the boot splash
     - >-
