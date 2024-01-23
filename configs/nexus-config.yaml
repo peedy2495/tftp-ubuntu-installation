@@ -4,12 +4,22 @@ blob-stores:
     path: /nexus-data/blobs/
     soft-quota: false
 
+  ubuntu-archive:
+    type: file
+    path: /nexus-data/blobs/
+    soft-quota: false
+
   ubuntu-releases:
     type: file
     path: /nexus-data/blobs/
     soft-quota: false
 
   google:
+    type: file
+    path: /nexus-data/blobs/
+    soft-quota: false
+
+  memtest:
     type: file
     path: /nexus-data/blobs/
     soft-quota: false
@@ -66,8 +76,8 @@ repositories:
         cleanup-policies:
   raw:
     proxy:
-      ubuntu-jammy-uefi:
-        remote-storage: http://archive.ubuntu.com/ubuntu/dists/jammy/main/uefi/grub2-amd64/current
+      ubuntu-archive:
+        remote-storage: http://archive.ubuntu.com/ubuntu
         blob-store: ubuntu-jammy
         auto-blocking-enabled: true
         strict-content-type-validation: true
@@ -76,6 +86,13 @@ repositories:
       ubuntu-releases:
         remote-storage: https://releases.ubuntu.com/releases
         blob-store: ubuntu-releases
+        auto-blocking-enabled: true
+        strict-content-type-validation: true
+        cleanup-policies:
+
+      memtest:
+        remote-storage: https://memtest.org/download
+        blob-store: memtest
         auto-blocking-enabled: true
         strict-content-type-validation: true
         cleanup-policies:
