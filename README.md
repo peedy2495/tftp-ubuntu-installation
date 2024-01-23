@@ -21,6 +21,8 @@ Target directory structure:
 ├── http -> /srv/tftp-ubuntu-installation/http
 ├── tftp -> /srv/tftp-ubuntu-installation/tftp
 └── tftp-ubuntu-installation
+    ├── LICENSE
+    ├── README.md
     ├── configs
     │   ├── compose
     │   │   ├── gostatic.yml
@@ -29,22 +31,28 @@ Target directory structure:
     │   │   └── pxe.conf
     │   └── nexus-config.yaml
     ├── http
+    │   ├── README.md
     │   ├── autoinstall
     │   │   └── jammy
     │   │       ├── assets
     │   │       │   ├── hostValues
     │   │       │   ├── lockRepos.sh
     │   │       │   ├── modFsTab.sh
+    │   │       │   ├── rmLocalUsers
+    │   │       │   ├── rmLocalUsers.service
     │   │       │   ├── rmSnap.sh
+    │   │       │   ├── setConnCurr.sh
     │   │       │   ├── setConnNM.sh
-    │   │       │   └── setHosts.sh
-    │   │       ├── ubuntu2204_desktop_efi_hardened.yaml
-    │   │       └── ubuntu2204_desktop.yaml
+    │   │       │   ├── setGraphics.sh
+    │   │       │   ├── setGraphics_ppa.sh
+    │   │       │   ├── setHosts.sh
+    │   │       │   └── sources.list
+    │   │       └── ubuntu2204_desktop_efi_hardened.yaml
     │   └── images
+    │       ├── INFO.txt
     │       └── ubuntu-22.04.3-live-server-amd64.iso
-    ├── LICENSE
-    ├── README.md
     └── tftp
+        ├── README.md
         ├── boot
         │   ├── grub
         │   │   ├── grub.cfg
