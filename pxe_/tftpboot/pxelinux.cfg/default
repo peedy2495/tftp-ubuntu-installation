@@ -1,0 +1,19 @@
+default menu.c32
+menu title Ubuntu installer
+
+LABEL jammy-basic
+        MENU LABEL Install Ubuntu Jammy (22.04.3) - Basic
+        MENU default
+        KERNEL jammy/vmlinuz
+        INITRD jammy/initrd
+        APPEND root=/dev/ram0 ramdisk_size=1500000 ip=dhcp cloud-config-url=http://192.168.123.180:8080/autoinstall/jammy/ubuntu2204_desktop.yaml url=http://192.168.123.180:8080/images/ubuntu-22.04.3-live-server-amd64.iso autoinstall
+
+LABEL jammy-hardened
+        MENU LABEL Install Ubuntu Jammy (22.04.3) - Hardened
+        MENU default
+        KERNEL jammy/vmlinuz
+        INITRD jammy/initrd
+        APPEND root=/dev/ram0 ramdisk_size=1500000 ip=dhcp cloud-config-url=http://192.168.123.180:8080/autoinstall/jammy/ubuntu2204_desktop_sec.yaml url=http://192.168.123.180:8080/images/ubuntu-22.04.3-live-server-amd64.iso autoinstall
+
+PROMPT 0
+TIMEOUT 300
