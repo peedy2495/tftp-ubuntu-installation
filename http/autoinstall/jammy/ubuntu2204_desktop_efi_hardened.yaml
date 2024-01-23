@@ -21,7 +21,7 @@ autoinstall:
       deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-security jammy-security multiverse
     sources:
       # Add mozilla package source
-      mozilla-ppa:
+      ppa-mozilla:
         source: deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-ppa-mozillateam jammy main
         key: |
           -----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -419,8 +419,8 @@ autoinstall:
   # 3. Prompt for user configuration on first boot.  Remove this identity
   #    section and see the "Installation without a default user" section.
   identity:
-    realname: temporaray 
-    username: temporaray
+    realname: temporary 
+    username: temporary
     # A password hash is needed. `mkpasswd --method=SHA-512` can help.
     # mkpasswd can be found in the package 'whois'
     # here: 'ChangeMe' ... for testing
@@ -651,6 +651,26 @@ autoinstall:
         type: mount
         id: lvm-mount-9
 
+      # ! ID related to home +1 -> config order: usage for rest of space @home
+      - name: lv-devhome
+        volgroup: lvm_volgroup-0
+        size: 1G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-11
+      - fstype: ext4
+        volume: lvm_partition-11
+        preserve: false
+        type: format
+        label: DEVHOME
+        id: lvm-format-11
+      - path: /home/dev
+        device: lvm-format-11
+        type: mount
+        options: relatime,nosuid
+        id: lvm-mount-11
+
       - name: lv-home
         volgroup: lvm_volgroup-0
         size: -1
@@ -669,7 +689,6 @@ autoinstall:
         type: mount
         options: relatime,nodev,nosuid,noexec
         id: lvm-mount-10
-
 
   # Ubuntu Desktop uses the hwe flavor kernel by default.
   early-commands:
@@ -731,16 +750,24 @@ autoinstall:
     # Remove unnecessary modem manager for cellphone connections
     - curtin in-target --target=/target -- apt-get --purge -y --quiet=2 remove modemmanager
 
-    # Finally, remove things only installed as dependencies of other things
-    # we have already removed.
-    - curtin in-target -- apt-get autoremove --purge -y --quiet=2
+    # Remove update notifications - causes errors on removed snapd
+    - curtin in-target --target=/target -- apt-get --purge -y --quiet=2 remove update-notifier-common
 
     # Install desktop related patterns and packages
     - >-
       curtin in-target -- apt-get install -y --install-recommends
       ubuntu-desktop firefox- modemmanager-
 
-    # Install or get proprietary graphic-drivers from ppa
+    # Fix updater issues related to removed snap environment
+    - curtin in-target --target=/target -- rm /etc/xdg/autostart/update-notifier.desktop
+
+    # Remove graphical software-center, because of issues with removed snap env and remote managed machines 
+    - curtin in-target --target=/target -- apt-get --purge -y --quiet=2 remove software-properties-gtk
+
+    # Finally, remove things only installed as dependencies of other things we have already removed.
+    - curtin in-target -- apt-get autoremove --purge -y --quiet=2
+
+    # Install or get proprietary graphic-drivers
     - /mnt/setGraphics.sh
 
     # Keep logical volume manager
