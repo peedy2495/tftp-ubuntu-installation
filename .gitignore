@@ -1,9 +1,11 @@
 *.0
+*.zip
 *.iso
 *.lst
 *.pf2
 *.c32
 *.efi*
+memtest*
 initrd
 vmlinuz
 tmp
