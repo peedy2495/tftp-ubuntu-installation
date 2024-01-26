@@ -652,7 +652,7 @@ autoinstall:
         id: lvm-mount-9
 
       # ! ID related to home +1 -> config order: usage for rest of space @home
-      - name: lv-devhome
+      - name: lv-develhome
         volgroup: lvm_volgroup-0
         size: 1G
         wipe: superblock
@@ -663,9 +663,9 @@ autoinstall:
         volume: lvm_partition-11
         preserve: false
         type: format
-        label: DEVHOME
+        label: DEVELHOME
         id: lvm-format-11
-      - path: /home/dev
+      - path: /home/devel
         device: lvm-format-11
         type: mount
         options: relatime,nosuid
@@ -719,6 +719,10 @@ autoinstall:
   late-commands:
     # Use repo proxy for pulling packages
     - /mnt/setHosts.sh /target/etc/hosts
+
+    # Change permissions for the /home/devel mount
+    - curtin in-target --target=/target -- chgrp sudo /home/devel
+    - curtin in-target --target=/target -- chmod 0770 /home/devel
 
     # Preserve abuses and unwanted changes on additional repo sources
     - /mnt/lockRepos.sh

@@ -62,6 +62,7 @@ fi
 if [[ ! -e memtest64.efi ]]; then
    wget -P ./tmp http://$NEXUS/repository/memtest//v7.00/mt86plus_7.00.binaries.zip
    unzip -d . ./tmp/mt86plus_7.00.binaries.zip
+   chmod go+r memtest*
 fi
 
 # cleanup
