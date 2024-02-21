@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# set static network via NetworkManager
+
 exePath="$(dirname -- "${BASH_SOURCE[0]}")"
 
 source $exePath/hostValues

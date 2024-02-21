@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set static network for current autoinstall environment
+# set static network via netplan
 
 exePath="$(dirname -- "${BASH_SOURCE[0]}")"
 
@@ -25,6 +25,7 @@ if [ "$conn_mac_should" = "$conn_mac" ]; then
 network:\n\
   ethernets:
     $conn_dev:\n\
+      dhcp4: false
       addresses:\n\
         - $conn_ip_should/$netmask\n\
       nameservers:\n\
@@ -33,9 +34,14 @@ network:\n\
         - to: default\n\
           via: $gateway\n\
   version: 2\n"\
-    > /etc/netplan/50-cloud-init.yaml
+    > /target/etc/netplan/50-cloud-init.yaml
 
-  netplan apply
+    curtin in-target --target=/target -- sed -i "s/premature/$host.$domain/" /etc/hostname
+    curtin in-target --target=/target -- sed -i "s/premature/$host.$domain/" /etc/hosts
+    printf "Domains=$domain" >> /target/etc/systemd/resolved.conf
+    curtin in-target --target=/target -- systemctl disable systemd-networkd-wait-online.service
+    curtin in-target --target=/target -- systemctl mask systemd-networkd-wait-online.service
+
 else
     echo "found desired interface $con_mac, but it's not the primary connected one!"
 fi
