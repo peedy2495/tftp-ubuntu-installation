@@ -760,7 +760,7 @@ autoinstall:
     # Install desktop related patterns and packages
     - >-
       curtin in-target -- apt-get install -y --install-recommends
-      ubuntu-desktop firefox- modemmanager-
+      ubuntu-desktop expect firefox- modemmanager-
 
     # Fix updater issues related to removed snap environment
     - curtin in-target --target=/target -- rm /etc/xdg/autostart/update-notifier.desktop
