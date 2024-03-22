@@ -771,9 +771,6 @@ autoinstall:
     # Finally, remove things only installed as dependencies of other things we have already removed.
     - curtin in-target -- apt-get autoremove --purge -y --quiet=2
 
-    # Install or get proprietary graphic-drivers
-    - /mnt/setGraphics.sh
-
     # Keep logical volume manager
     - curtin in-target -- apt install --reinstall -y lvm2
 
