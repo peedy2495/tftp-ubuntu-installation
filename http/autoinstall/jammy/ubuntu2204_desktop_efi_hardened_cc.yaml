@@ -1,0 +1,828 @@
+#cloud-config
+autoinstall:
+  # version is an Autoinstall required field.
+  version: 1
+
+  keyboard:
+    layout: de
+
+  apt:
+    preserve_sources_list: false
+    sources:
+      # Add mozilla package source
+      ppa-mozilla:
+        source: deb https://ppa.launchpadcontent.net/mozillateam/ppa/ubuntu jammy main
+        key: |
+          -----BEGIN PGP PUBLIC KEY BLOCK-----
+          
+          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
+          o5I=
+          =JViP
+          -----END PGP PUBLIC KEY BLOCK-----
+      google-chrome:
+        source: deb [arch=amd64] http://dl.google.com/linux/chrome/deb stable main
+        key: |
+          -----BEGIN PGP PUBLIC KEY BLOCK-----
+          Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+          mQGiBEXwb0YRBADQva2NLpYXxgjNkbuP0LnPoEXruGmvi3XMIxjEUFuGNCP4Rj/a
+          kv2E5VixBP1vcQFDRJ+p1puh8NU0XERlhpyZrVMzzS/RdWdyXf7E5S8oqNXsoD1z
+          fvmI+i9b2EhHAA19Kgw7ifV8vMa4tkwslEmcTiwiw8lyUl28Wh4Et8SxzwCggDcA
+          feGqtn3PP5YAdD0km4S4XeMEAJjlrqPoPv2Gf//tfznY2UyS9PUqFCPLHgFLe80u
+          QhI2U5jt6jUKN4fHauvR6z3seSAsh1YyzyZCKxJFEKXCCqnrFSoh4WSJsbFNc4PN
+          b0V0SqiTCkWADZyLT5wll8sWuQ5ylTf3z1ENoHf+G3um3/wk/+xmEHvj9HCTBEXP
+          78X0A/0Tqlhc2RBnEf+AqxWvM8sk8LzJI/XGjwBvKfXe+l3rnSR2kEAvGzj5Sg0X
+          4XmfTg4Jl8BNjWyvm2Wmjfet41LPmYJKsux3g0b8yzQxeOA4pQKKAU3Z4+rgzGmf
+          HdwCG5MNT2A5XxD/eDd+L4fRx0HbFkIQoAi1J3YWQSiTk15fw7RMR29vZ2xlLCBJ
+          bmMuIExpbnV4IFBhY2thZ2UgU2lnbmluZyBLZXkgPGxpbnV4LXBhY2thZ2VzLWtl
+          eW1hc3RlckBnb29nbGUuY29tPohjBBMRAgAjAhsDBgsJCAcDAgQVAggDBBYCAwEC
+          HgECF4AFAkYVdn8CGQEACgkQoECDD3+sWZHKSgCfdq3HtNYJLv+XZleb6HN4zOcF
+          AJEAniSFbuv8V5FSHxeRimHx25671az+uQINBEXwb0sQCACuA8HT2nr+FM5y/kzI
+          A51ZcC46KFtIDgjQJ31Q3OrkYP8LbxOpKMRIzvOZrsjOlFmDVqitiVc7qj3lYp6U
+          rgNVaFv6Qu4bo2/ctjNHDDBdv6nufmusJUWq/9TwieepM/cwnXd+HMxu1XBKRVk9
+          XyAZ9SvfcW4EtxVgysI+XlptKFa5JCqFM3qJllVohMmr7lMwO8+sxTWTXqxsptJo
+          pZeKz+UBEEqPyw7CUIVYGC9ENEtIMFvAvPqnhj1GS96REMpry+5s9WKuLEaclWpd
+          K3krttbDlY1NaeQUCRvBYZ8iAG9YSLHUHMTuI2oea07Rh4dtIAqPwAX8xn36JAYG
+          2vgLAAMFB/wKqaycjWAZwIe98Yt0qHsdkpmIbarD9fGiA6kfkK/UxjL/k7tmS4Vm
+          CljrrDZkPSQ/19mpdRcGXtb0NI9+nyM5trweTvtPw+HPkDiJlTaiCcx+izg79Fj9
+          KcofuNb3lPdXZb9tzf5oDnmm/B+4vkeTuEZJ//IFty8cmvCpzvY+DAz1Vo9rA+Zn
+          cpWY1n6z6oSS9AsyT/IFlWWBZZ17SpMHu+h4Bxy62+AbPHKGSujEGQhWq8ZRoJAT
+          G0KSObnmZ7FwFWu1e9XFoUCt0bSjiJWTIyaObMrWu/LvJ3e9I87HseSJStfw6fki
+          5og9qFEkMrIrBCp3QGuQWBq/rTdMuwNFiEkEGBECAAkFAkXwb0sCGwwACgkQoECD
+          D3+sWZF/WACfeNAu1/1hwZtUo1bR+MWiCjpvHtwAnA1R3IHqFLQ2X3xJ40XPuAyY
+          /FJG
+          =Quqp
+          -----END PGP PUBLIC KEY BLOCK-----
+          -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+          mQINBFcMjNMBEAC6Wr5QuLIFgz1V1EFPlg8ty2TsjQEl4VWftUAqWlMevJFWvYEx
+          BOsOZ6kNFfBfjAxgJNWTkxZrHzDl74R7KW/nUx6X57bpFjUyRaB8F3/NpWKSeIGS
+          pJT+0m2SgUNhLAn1WY/iNJGNaMl7lgUnaP+/ZsSNT9hyTBiH3Ev5VvAtMGhVI/u8
+          P0EtTjXp4o2U+VqFTBGmZ6PJVhCFjZUeRByloHw8dGOshfXKgriebpioHvU8iQ2U
+          GV3WNIirB2Rq1wkKxXJ/9Iw+4l5m4GmXMs7n3XaYQoBj28H86YA1cYWSm5LR5iU2
+          TneI1fJ3vwF2vpSXVBUUDk67PZhg6ZwGRT7GFWskC0z8PsWd5jwK20mA8EVKq0vN
+          BFmMK6i4fJU+ux17Rgvnc9tDSCzFZ1/4f43EZ41uTmmNXIDsaPCqwjvSS5ICadt2
+          xeqTWDlzONUpOs5yBjF1cfJSdVxsfshvln2JXUwgIdKl4DLbZybuNFXnPffNLb2v
+          PtRJHO48O2UbeXS8n27PcuMoLRd7+r7TsqG2vBH4t/cB/1vsvWMbqnQlaJ5VsjeW
+          Tp8Gv9FJiKuU8PKiWsF4EGR/kAFyCB8QbJeQ6HrOT0CXLOaYHRu2TvJ4taY9doXn
+          98TgU03XTLcYoSp49cdkkis4K+9hd2dUqARVCG7UVd9PY60VVCKi47BVKQARAQAB
+          tFRHb29nbGUgSW5jLiAoTGludXggUGFja2FnZXMgU2lnbmluZyBBdXRob3JpdHkp
+          IDxsaW51eC1wYWNrYWdlcy1rZXltYXN0ZXJAZ29vZ2xlLmNvbT6JAk4EEwEIADgC
+          GwMCHgECF4AWIQTrTBv9TwQvbd3M7JF3IfY704tHlgUCVwyM0wULCQgHAgYVCgkI
+          CwIEFgIDAQAKCRB3IfY704tHlkGrD/9aIOPxoABbhHDa+GbM1XHSeV99q2UOIsYc
+          A5Jg3k2+Vbjr/006cL9Kk+rdbruZJtERo2z+HVVhkJisvySbsd0UbWfiY5AdHzNP
+          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
+          47hwiKc+VTQGvCZqs8eT+pbnw1Recd13J9Ny7bM=
+          =OrhN
+          -----END PGP PUBLIC KEY BLOCK-----
+
+  # User creation can occur in one of 3 ways:
+  # 1. Create a user using this `identity` section.
+  # 2. Create users as documented in cloud-init inside the user-data section,
+  #    which means this single-user identity section may be removed.
+  # 3. Prompt for user configuration on first boot.  Remove this identity
+  #    section and see the "Installation without a default user" section.
+  identity:
+    realname: temporary 
+    username: temporary
+    # A password hash is needed. `mkpasswd --method=SHA-512` can help.
+    # mkpasswd can be found in the package 'whois'
+    # here: 'ChangeMe' ... for testing
+    password: '$6$94XdJRnQqQTIkiqy$pMlmI8ouqW3GR2P8nYBAuFGItubjCjo7XZzVOkMN13T3u43gYZSAWUZZjqGFX86KAQ7OtB0kXiOflBedl5zlJ0'
+    hostname: premature
+
+  storage:
+    swap:
+      size: 0
+    config:
+      - id: system-disk
+        type: disk
+        preserve: false
+        wipe: superblock-recursive
+        ptable: gpt
+        grub_device: false
+        match:
+          size: smallest
+
+      - device: system-disk
+        type: partition
+        wipe: superblock
+        flag: boot
+        id: sys-part-1
+        number: 1
+        size: 1G
+        offset: 1048576
+        grub_device: true
+      - fstype: fat32
+        volume: sys-part-1
+        preserve: false
+        type: format
+        label: EFI
+        id: sys-format-1
+      - path: /boot/efi
+        device: sys-format-1
+        type: mount
+        id: mount-1
+
+      - device: system-disk
+        size: 2G
+        wipe: superblock
+        number: 2
+        preserve: false
+        type: partition
+        id: sys-part-2
+      - fstype: ext4
+        volume: sys-part-2
+        preserve: false
+        type: format
+        label: BOOT
+        id: sys-format-2
+      - path: /boot
+        device: sys-format-2
+        type: mount
+        id: mount-2
+
+      - device: system-disk
+        size: -1
+        wipe: superblock
+        number: 3
+        preserve: false
+        grub_device: false
+        type: partition
+        id: sys-part-3
+
+      - id: LVM_crypt
+        type: dm_crypt
+        volume: sys-part-3
+        preserve: false
+        # here: 'ChangeMe' ... for testing
+        key: 'ChangeMe'
+
+      - name: vg-system
+        devices: [LVM_crypt]
+        preserve: false
+        type: lvm_volgroup
+        id: lvm_volgroup-0
+
+      - name: lv-varlog
+        volgroup: lvm_volgroup-0
+        size: 10G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-2
+      - fstype: ext4
+        volume: lvm_partition-2
+        preserve: false
+        type: format
+        label: VARLOG
+        id: lvm-format-2
+      - path: /var/log
+        device: lvm-format-2
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-2
+
+      - name: lv-mnt
+        volgroup: lvm_volgroup-0
+        size: 4K
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-3
+      - fstype: ext4
+        volume: lvm_partition-3
+        preserve: false
+        type: format
+        label: MNT
+        id: lvm-format-3
+      - path: /var/mnt
+        device: lvm-format-3
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-3
+
+      - name: lv-vartmp
+        volgroup: lvm_volgroup-0
+        size: 10G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-4
+      - fstype: ext4
+        volume: lvm_partition-4
+        preserve: false
+        type: format
+        label: VARTMP
+        id: lvm-format-4
+      - path: /var/tmp
+        device: lvm-format-4
+        type: mount
+        # noexec not activated, because of ansible needs
+        options: relatime,nodev,nosuid
+        id: lvm-mount-4
+
+      - name: lv-varlogaudit
+        volgroup: lvm_volgroup-0
+        size: 10G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-5
+      - fstype: ext4
+        volume: lvm_partition-5
+        preserve: false
+        type: format
+        label: VARLOGAUDIT
+        id: lvm-format-5
+      - path: /var/log/audit
+        device: lvm-format-5
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-5
+
+      - name: lv-opt
+        volgroup: lvm_volgroup-0
+        size: 5G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-6
+      - fstype: ext4
+        volume: lvm_partition-6
+        preserve: false
+        type: format
+        label: OPT
+        id: lvm-format-6
+      - path: /opt
+        device: lvm-format-6
+        type: mount
+        options: relatime,nodev,nosuid
+        id: lvm-mount-6
+
+      - name: lv-root
+        volgroup: lvm_volgroup-0
+        size: 20G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-7
+      - fstype: ext4
+        volume: lvm_partition-7
+        preserve: false
+        type: format
+        label: ROOT
+        id: lvm-format-7
+      - path: /
+        device: lvm-format-7
+        type: mount
+        id: lvm-mount-7
+
+      - name: lv-tmp
+        volgroup: lvm_volgroup-0
+        size: 5G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-8
+      - fstype: ext4
+        volume: lvm_partition-8
+        preserve: false
+        type: format
+        label: TMP
+        id: lvm-format-8
+      - path: /tmp
+        device: lvm-format-8
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-8
+
+      - name: lv-varlib
+        volgroup: lvm_volgroup-0
+        size: 5G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-9
+      - fstype: ext4
+        volume: lvm_partition-9
+        preserve: false
+        type: format
+        label: VARLIB
+        id: lvm-format-9
+      - path: /var/lib
+        device: lvm-format-9
+        type: mount
+        id: lvm-mount-9
+
+      # ! ID related to home +1 -> config order: usage for rest of space @home
+      - name: lv-develhome
+        volgroup: lvm_volgroup-0
+        size: 1G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-11
+      - fstype: ext4
+        volume: lvm_partition-11
+        preserve: false
+        type: format
+        label: DEVELHOME
+        id: lvm-format-11
+      - path: /home/devel
+        device: lvm-format-11
+        type: mount
+        options: relatime,nosuid
+        id: lvm-mount-11
+
+      - name: lv-home
+        volgroup: lvm_volgroup-0
+        size: -1
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-10
+      - fstype: ext4
+        volume: lvm_partition-10
+        preserve: false
+        type: format
+        label: HOME
+        id: lvm-format-10
+      - path: /home
+        device: lvm-format-10
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-10
+
+  # Ubuntu Desktop uses the hwe flavor kernel by default.
+  early-commands:
+    - echo 'linux-generic-hwe-22.04' > /run/kernel-meta-package
+    
+    # Mount temporary ramdisk for additional data
+    - mount -t tmpfs -o size=512M tmpfs /mnt
+    
+    # Pull additional data for installation process
+    - wget -P /mnt -r -nH --cut-dirs=3 -np http://$(cat /proc/cmdline |awk -F' ' '{print $4}'|awk -F'/' '{print $3}')/autoinstall/jammy/assets/
+    - chmod +x /mnt/*.sh
+
+    # set desired static network for this session, yet
+    #- /mnt/setConnCurr.sh
+
+  # The live-server ISO does not contain some of the required packages,
+  # such as ubuntu-desktop or the hwe kernel (or most of their depdendencies).
+ 
+  late-commands:
+    # Use repo proxy for pulling packages
+    - /mnt/setHosts.sh /target/etc/hosts
+
+    # Change permissions for the /home/devel mount
+    - curtin in-target --target=/target -- chgrp sudo /home/devel
+    - curtin in-target --target=/target -- chmod 0770 /home/devel
+
+    # Preserve abuses and unwanted changes on additional repo sources
+    - /mnt/lockRepos.sh
+
+    # Preserve abuses on vulnerable system parts
+    - /mnt/modFsTab.sh
+
+    # Remove default filesystem and related tools not used with the suggested
+    # 'direct' storage layout.  These may yet be required if different
+    # partitioning schemes are used.
+    - >-
+      curtin in-target -- apt-get remove -y
+      btrfs-progs xfsprogs
+
+    # Remove other packages present by default in Ubuntu Server but not
+    # normally present in Ubuntu Desktop.
+    - >-
+      curtin in-target -- apt-get remove -y
+      ubuntu-server ubuntu-server-minimal
+      binutils byobu curl dmeventd finalrd gawk
+      kpartx mdadm ncurses-term needrestart open-iscsi
+      sg3-utils ssh-import-id sssd thin-provisioning-tools vim tmux
+      sosreport screen open-vm-tools motd-news-config lxd-agent-loader
+      landscape-common htop git fonts-ubuntu-console ethtool
+
+    # Remove snap environment
+    - /mnt/rmSnap.sh
+
+    # Remove unnecessary modem manager for cellphone connections
+    - curtin in-target --target=/target -- apt-get --purge -y --quiet=2 remove modemmanager
+
+    # Remove update notifications - causes errors on removed snapd
+    - curtin in-target --target=/target -- apt-get --purge -y --quiet=2 remove update-notifier-common
+
+    # Install desktop related patterns and packages
+    - >-
+      curtin in-target -- apt-get install -y --install-recommends
+      ubuntu-desktop expect firefox- modemmanager-
+
+    # Fix updater issues related to removed snap environment
+    - curtin in-target --target=/target -- rm /etc/xdg/autostart/update-notifier.desktop
+
+    # Remove graphical software-center, because of issues with removed snap env and remote managed machines 
+    - curtin in-target --target=/target -- apt-get --purge -y --quiet=2 remove software-properties-gtk
+
+    # Finally, remove things only installed as dependencies of other things we have already removed.
+    - curtin in-target -- apt-get autoremove --purge -y --quiet=2
+
+    # Keep logical volume manager
+    - curtin in-target -- apt install --reinstall -y lvm2
+
+    # (Re)install desktop flavour needs
+    - curtin in-target -- apt install -y firefox-esr firefox-esr-locale-de google-chrome-stable
+
+    # Install bootsplash ui
+    - >-
+      curtin in-target -- apt-get install -y --install-recommends
+      plymouth
+      plymouth-label
+      plymouth-theme-spinner
+      plymouth-theme-ubuntu-text
+
+    # Keep cloud-init, as it performs some of the installation on first boot.
+    - curtin in-target -- apt-get install -y cloud-init
+
+    # Enable the boot splash
+    - >-
+      curtin in-target --
+      sed -i /etc/default/grub -e
+      's/GRUB_CMDLINE_LINUX_DEFAULT=".*/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"/'
+    - curtin in-target -- update-grub
+
+    # Set detailed localization
+    - ln -fs /usr/share/zoneinfo/Europe/Berlin /target/etc/localtime
+
+    # Disable bloat and too informative stuff
+    - sed -i 's/ENABLED=1/ENABLED=0/' /target/etc/default/motd-news
+    - ln -fs /dev/null /target/etc/systemd/system/motd-news.service
+    - ln -fs /dev/null /target/etc/systemd/system/motd-news.timer
+    - ln -fs /dev/null /target/etc/systemd/system/plymouth-quit-wait.service
+    - ln -fs /dev/null /target/etc/systemd/system/plymouth-start.service
+    - rm -f /target/etc/update-motd.d/10-help-text
+
+    # Preserve kernel command-line parameters for debugging
+    - cat /proc/cmdline >/target/var/log/installer/cmdline
+
+    # Configure NetworkManager and network related system parts
+    - /mnt/setConnNM.sh
+
+    # Let NetworkManager handle network
+    - rm /target/etc/netplan/00-installer-config*yaml
+    - >-
+      printf "network:\n  version: 2\n  renderer: NetworkManager"
+      > /target/etc/netplan/01-network-manager-all.yaml
+
+  # Additional cloud-init section for final finish
+
+  user-data:
+    disable_root: true
+    ssh_pwauth: false
+
+    users:
+      - name: ansible
+        uid: 64001
+        primary_group: users
+        groups: sudo
+        lock_passwd: true
+        shell: /bin/bash
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        # dont't worry ... this ssh key will never be used in real environments ;-) 
+        ssh_authorized_keys:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINLFljoNdv6M6uKzKfkQbXGdEO/hs0zK3v9tp/v08pgo ansible@testing"
+      - name: sysadmin
+        uid: 999
+        primary_group: users
+        groups: sudo
+        plain_text_passwd: ChangeMe
+        lock_passwd: false
+        shell: /bin/bash
+
+    # reboot after first host initial provisioning
+    power_state:
+      mode: reboot
