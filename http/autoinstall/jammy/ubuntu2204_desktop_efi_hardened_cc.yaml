@@ -797,7 +797,7 @@ autoinstall:
     - >-
       printf "network:\n  version: 2\n  renderer: NetworkManager"
       > /target/etc/netplan/01-network-manager-all.yaml
-
+      
   # Additional cloud-init section for final finish
 
   user-data:
@@ -826,3 +826,6 @@ autoinstall:
     # reboot after first host initial provisioning
     power_state:
       mode: reboot
+
+    runcmd:
+      - userdel -r -f temporary
