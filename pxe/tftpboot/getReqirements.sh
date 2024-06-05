@@ -1,4 +1,5 @@
 #!/bin/bash
+# you have to run this script directly out of the tftp boot dir!
 
 NEXUS='192.168.123.180:8081'
 
@@ -26,6 +27,13 @@ if [[ ! -e ./syslinux ]]; then
     ln -s syslinux/bios/menu.c32 menu.c32
 fi
 
+if [[ ! -e ./shimx64.efi ]]; then
+    apt install -d -o=dir::cache=./tmp shim-signed
+    PKG=`ls ./tmp/archives/shim-signed_*` 
+    sudo dpkg -x $PKG ./tmp/shim-signed
+    cp ./tmp/shim-signed/usr/lib/shim/shimx64.efi .
+fi
+
 # get pxelinux package and install reqired files
 if [[ ! -e pxelinux.0 ]]; then
     apt install -d -o=dir::cache=./tmp -y pxelinux
@@ -37,6 +45,7 @@ fi
 # get UEFI grub images (unsigned & signed)
 [ -f grubnetx64.efi ] || wget -P ./  http://$NEXUS/repository/ubuntu-archive/dists/jammy/main/uefi/grub2-amd64/current/grubnetx64.efi
 [ -f grubnetx64.efi.signed ] || wget -P ./  http://$NEXUS/repository/ubuntu-archive/dists/jammy/main/uefi/grub2-amd64/current/grubnetx64.efi.signed
+ln -s grubnetx64.efi.signed grubx64.efi
 
 # get grub relevant files from current OS
 if [[ ! -e ./boot/grub/x86_64-efi ]]; then
