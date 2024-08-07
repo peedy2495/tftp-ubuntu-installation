@@ -10,3 +10,4 @@ memtest*
 initrd
 vmlinuz
 tmp
+*.id

@@ -742,7 +742,7 @@ autoinstall:
     - >-
       curtin in-target -- apt-get remove -y
       ubuntu-server ubuntu-server-minimal
-      binutils byobu curl dmeventd finalrd gawk
+      binutils byobu dmeventd finalrd gawk
       kpartx mdadm ncurses-term needrestart open-iscsi
       sg3-utils ssh-import-id sssd thin-provisioning-tools vim tmux
       sosreport screen open-vm-tools motd-news-config lxd-agent-loader
@@ -825,6 +825,9 @@ autoinstall:
     - chmod 0600  /target/etc/systemd/system/rmLocalUsers.service
     - curtin in-target -- systemctl enable rmLocalUsers.service
 
+    # prepare semaphore delegated ansible rollout
+    - apt install -y jq
+    - /mnt/semaphore.sh
 
   # Additional cloud-init section for final finish
 
