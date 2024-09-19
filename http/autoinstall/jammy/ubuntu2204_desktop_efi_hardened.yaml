@@ -825,15 +825,19 @@ autoinstall:
     - chmod 0600  /target/etc/systemd/system/rmLocalUsers.service
     - curtin in-target -- systemctl enable rmLocalUsers.service
 
-    # bypass luks password prompt during rollouts
+    # Bypass luks password prompt during rollouts
     - /mnt/luksBypass.sh ChangeMe
 
-    # prepare semaphore delegated ansible rollout
+    # Prepare semaphore delegated ansible rollout
     - apt install -y jq
     - /mnt/semaphore.sh
 
-    # correct bootorder on secure boot systems
+    # Correct bootorder on secure boot systems
     - /mnt/setBootorder.sh
+
+    # Set a Warning-Frame to the login-screen
+    - apt-get install -y j2cli
+    - /mnt/setGreeterInstallationFrame.sh
 
   # Additional cloud-init section for final finish
 
