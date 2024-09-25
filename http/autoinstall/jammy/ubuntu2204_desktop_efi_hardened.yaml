@@ -762,6 +762,9 @@ autoinstall:
       curtin in-target -- apt-get install -y --install-recommends
       ubuntu-desktop expect firefox- modemmanager-
 
+    # Install required admin tools
+    - curtin in-target -- apt-get install -y  j2cli
+
     # Fix updater issues related to removed snap environment
     - curtin in-target --target=/target -- rm /etc/xdg/autostart/update-notifier.desktop
 
@@ -836,7 +839,6 @@ autoinstall:
     - /mnt/setBootorder.sh
 
     # Set a Warning-Frame to the login-screen
-    - apt-get install -y j2cli
     - /mnt/setGreeterInstallationFrame.sh
 
   # Additional cloud-init section for final finish
