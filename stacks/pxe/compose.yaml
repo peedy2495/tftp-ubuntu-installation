@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  pxe:
+    image: ferrarimarco/pxe:1
+    restart: always
+    #ports:
+    #- "8080:8043"
+    environment:
+      - dhcp-range=192.168.123.100,192.168.123.120,255.255.255.0
+    volumes:
+    - /media/docker/tftp-ubuntu-installation/pxe/pxe.conf:/etc/dnsmasq.conf
+    - /media/docker/tftp-ubuntu-installation/pxe/tftpboot:/var/lib/tftpboot
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN

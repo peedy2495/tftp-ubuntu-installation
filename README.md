@@ -116,5 +116,5 @@ Example target directory structures:
 │       └── ubuntu2204_desktop_efi_hardened.yaml
 └── images
     ├── INFO.txt
-    └── ubuntu-22.04.3-live-server-amd64.iso
+    └── ubuntu-22.04.4-live-server-amd64.iso
 ```

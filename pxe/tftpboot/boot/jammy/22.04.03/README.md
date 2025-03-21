@@ -1,0 +1,1 @@
+Drop here the initrd and vmlinuz out othe the exact maching installation ISO out of casper/ 

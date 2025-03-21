@@ -10,7 +10,7 @@ ubuntu_proxy="192.168.123.180"
 declare -A hosts=(
     [n0a]=00:bf
     [cc01]=c8:d9:d2:0f:d6:6f
-    [ubuntu-test]=52:54:00:bd:a2:f3
+    [ubuntu-test]=52:54:00:9b:01:63
     [ubuntu-x2]=52:54:00:35:e4:5a
 )
 
