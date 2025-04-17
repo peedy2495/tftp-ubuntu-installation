@@ -1,0 +1,10 @@
+[Unit]
+Description=remove temporary User created by cloud-init
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/rmLocalUsers
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

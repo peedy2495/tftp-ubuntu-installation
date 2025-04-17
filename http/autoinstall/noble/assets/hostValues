@@ -1,0 +1,19 @@
+#!/bin/bash
+
+netmask="24"
+gateway="192.168.123.180"
+dns_nm="127.0.0.1"  #NetworkManager entries are separated by semicolon!
+dns="127.0.0.1"
+domain="zq.zek"
+nexus_c2="192.168.123.180"
+con_ip_tmp="192.168.100.199/24"
+
+declare -A hosts=(
+    [ubuntu-noble-srv]=bc:24:11:4e:51:5b
+    [ubuntu-test]=52:54:00:9b:01:63
+)
+
+declare -A IPs=(
+    [ubuntu-noble-srv]=192.168.123.100
+    [ubuntu-test]=192.168.123.222
+)

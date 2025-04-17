@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for usr in `awk -F'[/:]' '{if ($3 >= 1000 && $3 <= 64000) print $1}' /etc/passwd`;do
+  echo "`date '+%F %H:%M:%S'` `cat /etc/passwd|grep $usr`" >>/var/log/rmLogUsers.log
+  deluser --remove-home $usr
+done
