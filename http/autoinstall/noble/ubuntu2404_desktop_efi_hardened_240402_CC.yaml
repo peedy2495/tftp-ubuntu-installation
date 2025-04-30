@@ -64,7 +64,6 @@ autoinstall:
     - openssh-server
     - openssh-client
     #- cloud-init
-    - curl
     - jq
     - j2cli
     - expect
@@ -309,9 +308,28 @@ autoinstall:
         id: lvm-mount-9
 
       # ! ID related to home +1 -> config order: usage for rest of space @home
-      - name: lv-develhome
+      # - name: lv-develhome
+        # volgroup: lvm_volgroup-0
+        # size: 1G
+        # wipe: superblock
+        # preserve: false
+        # type: lvm_partition
+        # id: lvm_partition-11
+      # - fstype: ext4
+        # volume: lvm_partition-11
+        # preserve: false
+        # type: format
+        # label: DEVELHOME
+        # id: lvm-format-11
+      # - path: /home/devel
+        # device: lvm-format-11
+        # type: mount
+        # options: relatime,nosuid
+        # id: lvm-mount-11
+
+      - name: lv-home
         volgroup: lvm_volgroup-0
-        size: 1G
+        size: -1
         wipe: superblock
         preserve: false
         type: lvm_partition
@@ -320,32 +338,13 @@ autoinstall:
         volume: lvm_partition-10
         preserve: false
         type: format
-        label: DEVELHOME
+        label: HOME
         id: lvm-format-10
-      - path: /home/devel
+      - path: /home
         device: lvm-format-10
         type: mount
-        options: relatime,nosuid
-        id: lvm-mount-10
-
-      - name: lv-home
-        volgroup: lvm_volgroup-0
-        size: -1
-        wipe: superblock
-        preserve: false
-        type: lvm_partition
-        id: lvm_partition-11
-      - fstype: ext4
-        volume: lvm_partition-11
-        preserve: false
-        type: format
-        label: HOME
-        id: lvm-format-11
-      - path: /home
-        device: lvm-format-11
-        type: mount
         options: relatime,nodev,nosuid,noexec
-        id: lvm-mount-11
+        id: lvm-mount-10
 
   # Ubuntu Desktop uses the hwe flavor kernel by default.
   early-commands:
@@ -378,8 +377,8 @@ autoinstall:
     - /mnt/setHosts.sh /target/etc/hosts
 
     # Change permissions for the /home/devel mount
-    - curtin in-target --target=/target -- chgrp sudo /home/devel
-    - curtin in-target --target=/target -- chmod 0770 /home/devel
+    # - curtin in-target --target=/target -- chgrp sudo /home/devel
+    # - curtin in-target --target=/target -- chmod 0770 /home/devel
 
     # Preserve abuses and unwanted changes on additional repo sources
     - /mnt/lockRepos.sh
@@ -406,7 +405,7 @@ autoinstall:
     #!  landscape-common htop git fonts-ubuntu-console ethtool
 
     # Remove snap environment
-    #!- /mnt/rmSnap.sh
+    - /mnt/rmSnap.sh
 
     # Remove unnecessary modem manager for cellphone connections
     #!- curtin in-target --target=/target -- apt-get --purge -y --quiet=2 remove modemmanager
@@ -474,7 +473,7 @@ autoinstall:
     - cat /proc/cmdline >/target/var/log/installer/cmdline
 
     # Configure NetworkManager and network related system parts
-    - /mnt/setConnNP.sh
+    - /mnt/setConnNM.sh
 
     # Let NetworkManager handle network
     #!- rm /target/etc/netplan/00-installer-config.yaml|echo "Removing network installer-config returned $?"
@@ -483,11 +482,11 @@ autoinstall:
     #!  > /target/etc/netplan/01-network-manager-all.yaml
 
     # preserve using local users for using LDAP, only
-    - cp /mnt/rmLocalUsers /target/usr/local/sbin/
-    - chmod 0700  /target/usr/local/sbin/rmLocalUsers
-    - cp /mnt/rmLocalUsers.service /target/etc/systemd/system/
-    - chmod 0600  /target/etc/systemd/system/rmLocalUsers.service
-    - curtin in-target -- systemctl enable rmLocalUsers.service
+    # - cp /mnt/rmLocalUsers /target/usr/local/sbin/
+    # - chmod 0700  /target/usr/local/sbin/rmLocalUsers
+    # - cp /mnt/rmLocalUsers.service /target/etc/systemd/system/
+    # - chmod 0600  /target/etc/systemd/system/rmLocalUsers.service
+    # - curtin in-target -- systemctl enable rmLocalUsers.service
 
     # Bypass luks password prompt during rollouts
     - /mnt/luksBypass.sh ChangeMe
