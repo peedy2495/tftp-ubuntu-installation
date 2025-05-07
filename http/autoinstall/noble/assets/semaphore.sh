@@ -27,7 +27,7 @@ template_id=$(jq -r --arg template_name "$semaphore_template" '.[] | select(.nam
 cat > /target/etc/systemd/system/semaphore_rollout.service <<EOF
 [Unit]
 Description=Send curl POST request to start the ansible semaphore rollout template
-After=network-online.target
+After=cloud-init.service network-online.target
 Wants=network-online.target
 
 [Service]
