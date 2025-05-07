@@ -32,14 +32,14 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/bin/sh -c '[ -e /var/lib/cloud/instance/boot-finished ] || exit 1;'
+ExecStart=/bin/sh -c '[ -e /etc/cloud/cloud-init.disabled ] || exit 1;'
 ExecStart=/usr/bin/curl -v -X POST \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H 'Authorization: Bearer ${semaphore_token_ansible}' \
   -d '{"template_id": ${template_id}, "debug": false, "dry_run": false, "diff": false, "playbook": "", "environment": "{}", "limit": ""}' \
   http://${semaphore_host}/api/project/${project_id}/tasks
-ExecStartPost=/bin/sh -c '[ -e /var/lib/cloud/instance/boot-finished ] || exit 1; \
+ExecStartPost=/bin/sh -c '[ -e /etc/cloud/cloud-init.disabled ] || exit 1; \
   systemctl stop semaphore_rollout.timer; \
   sleep 2; \
   rm -f /etc/systemd/system/multi-user.target.wants/semaphore_rollout.timer; \

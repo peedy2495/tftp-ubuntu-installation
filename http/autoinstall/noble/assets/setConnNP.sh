@@ -15,7 +15,7 @@ done
 
 conn_mac_should=${hosts[$host]}
 conn_ip_should=${IPs[$host]}
-conn_ip=`hostname -I`
+conn_ip=`hostname -I | cut -d' ' -f1`
 conn_dev=`ip addr | grep $conn_ip | awk '{print $NF}'`
 conn_mac=`ip link show $conn_dev|grep ether|awk {'print $2'}`
 
@@ -23,18 +23,18 @@ conn_mac=`ip link show $conn_dev|grep ether|awk {'print $2'}`
 if [ "$conn_mac_should" = "$conn_mac" ]; then
     echo -e "\
 network:\n\
-  ethernets:
-    $conn_dev:\n\
+  ethernets:\n\
+    ${conn_dev}:\n\
       dhcp4: false
       addresses:\n\
-        - $conn_ip_should/$netmask\n\
+        - ${conn_ip_should}/${netmask}\n\
       nameservers:\n\
-        addresses: [$dns]\n\
+        addresses: [${dns}]\n\
       routes:\n\
         - to: default\n\
-          via: $gateway\n\
+          via: ${gateway}\n\
   version: 2\n"\
-    > /target/etc/netplan/50-cloud-init.yaml
+    > /target/etc/cloud/cloud.cfg.d/98-network.cfg
 
     curtin in-target --target=/target -- sed -i "s/premature/$host.$domain/" /etc/hostname
     curtin in-target --target=/target -- sed -i "s/premature/$host.$domain/" /etc/hosts
