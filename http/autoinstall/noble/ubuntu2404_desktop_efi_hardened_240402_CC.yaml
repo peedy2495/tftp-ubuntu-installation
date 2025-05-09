@@ -64,6 +64,7 @@ autoinstall:
     - openssh-server
     - openssh-client
     #- cloud-init
+    - curl
     - jq
     - j2cli
     - expect
@@ -254,7 +255,7 @@ autoinstall:
 
       - name: lv-root
         volgroup: lvm_volgroup-0
-        size: 20G
+        size: 100G
         wipe: superblock
         preserve: false
         type: lvm_partition
@@ -291,7 +292,7 @@ autoinstall:
 
       - name: lv-varlib
         volgroup: lvm_volgroup-0
-        size: 5G
+        size: 500G
         wipe: superblock
         preserve: false
         type: lvm_partition
@@ -366,6 +367,8 @@ autoinstall:
     # Override native repo definition during installation, too
     - cp /mnt/ubuntu_desktop.sources /etc/apt/sources.list.d/ubuntu.sources
     - apt update
+    # Install required packages for the installation process
+    - apt install -y jq curl
 
   # The live-server ISO does not contain some of the required packages,
   # such as ubuntu-desktop or the hwe kernel (or most of their depdendencies).
@@ -405,7 +408,7 @@ autoinstall:
     #!  landscape-common htop git fonts-ubuntu-console ethtool
 
     # Remove snap environment
-    - /mnt/rmSnap.sh
+    #- /mnt/rmSnap.sh
 
     # Remove unnecessary modem manager for cellphone connections
     #!- curtin in-target --target=/target -- apt-get --purge -y --quiet=2 remove modemmanager
@@ -473,7 +476,7 @@ autoinstall:
     - cat /proc/cmdline >/target/var/log/installer/cmdline
 
     # Configure NetworkManager and network related system parts
-    - /mnt/setConnNM.sh
+    - /mnt/setConnNP.sh
 
     # Let NetworkManager handle network
     #!- rm /target/etc/netplan/00-installer-config.yaml|echo "Removing network installer-config returned $?"
@@ -493,7 +496,7 @@ autoinstall:
 
     # Prepare semaphore delegated ansible rollout
     #!- apt install -y jq
-    - /mnt/semaphore.sh
+    - /mnt/semaphore.sh 'Docker Desktops' 'Ubuntu Desktop 24.04 - CC rollout'
 
     # Correct bootorder on secure boot systems
     - /mnt/setBootorder.sh

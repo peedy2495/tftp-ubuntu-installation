@@ -11,9 +11,11 @@ con_ip_tmp="192.168.100.199/24"
 declare -A hosts=(
     [ubuntu-noble-srv]=bc:24:11:4e:51:5b
     [ubuntu-test]=52:54:00:9b:01:63
+    [cc02]=98:ee:cb:bb:f8:62
 )
 
 declare -A IPs=(
     [ubuntu-noble-srv]=192.168.123.100
     [ubuntu-test]=192.168.123.222
+    [cc02]=192.168.123.102
 )

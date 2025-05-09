@@ -4,8 +4,8 @@ exePath="$(dirname -- "${BASH_SOURCE[0]}")"
 source "$exePath/semaphore.id"
 
 semaphore_host="192.168.123.180:3000"
-semaphore_project="Docker Desktops"
-semaphore_template="Ubuntu Desktop - caching all roles"
+semaphore_project="$1"
+semaphore_template="$2"
 
 
 curl -v -GET \
