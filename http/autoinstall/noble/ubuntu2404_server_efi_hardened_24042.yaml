@@ -32,7 +32,7 @@ autoinstall:
     # A password hash is needed. `mkpasswd --method=SHA-512` can help.
     # mkpasswd can be found in the package 'whois'
     # here: 'ChangeMe' ... for testing
-    password: '$6$mI/3C4ftIAkVsoTF$.Xop0BOYVb76OhgZDvQkiZcunFHEZzP6KWBdWqULFYCPNbQbaajpseNdGlDCPuC/vOElOjquOHQIL5Wb0kpCg.'
+    password: '$6$94XdJRnQqQTIkiqy$pMlmI8ouqW3GR2P8nYBAuFGItubjCjo7XZzVOkMN13T3u43gYZSAWUZZjqGFX86KAQ7OtB0kXiOflBedl5zlJ0'
     hostname: premature
 
   storage:

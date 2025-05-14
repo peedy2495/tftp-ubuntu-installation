@@ -22,7 +22,7 @@ dd if=/dev/urandom of=/target$keyFilePath bs=1024 count=4
 chmod 0600 /target$keyFilePath
 
 # Add the keyfile to luks
-echo "ChangeMe" | cryptsetup luksAddKey --force-password /dev/$luksDevice /target$keyFilePath >>/target/root/debug.txt
+echo "$passwd" | cryptsetup luksAddKey --force-password /dev/$luksDevice /target$keyFilePath >>/target/root/debug.txt
 
 # Preparing for using the kefile in initramfs
 echo "KEYFILE_PATTERN=$keyFilePath" >> /target/etc/cryptsetup-initramfs/conf-hook
