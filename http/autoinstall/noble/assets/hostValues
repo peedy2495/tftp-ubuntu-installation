@@ -17,5 +17,5 @@ declare -A hosts=(
 declare -A IPs=(
     [ubuntu-noble-srv]=192.168.123.100
     [ubuntu-test]=192.168.123.222
-    [cc02]=192.168.123.102
+    [cc02]=192.168.123.12
 )

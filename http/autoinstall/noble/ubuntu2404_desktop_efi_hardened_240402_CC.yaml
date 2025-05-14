@@ -63,7 +63,6 @@ autoinstall:
   packages:
     - openssh-server
     - openssh-client
-    #- cloud-init
     - curl
     - jq
     - j2cli
@@ -76,8 +75,8 @@ autoinstall:
   # 3. Prompt for user configuration on first boot.  Remove this identity
   #    section and see the "Installation without a default user" section.
   identity:
-    realname: temporary 
-    username: temporary
+    realname: sysadmin 
+    username: sysadmin
     # A password hash is needed. `mkpasswd --method=SHA-512` can help.
     # mkpasswd can be found in the package 'whois'
     # here: 'ChangeMe' ... for testing
