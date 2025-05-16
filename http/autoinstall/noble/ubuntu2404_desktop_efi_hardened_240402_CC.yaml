@@ -79,8 +79,8 @@ autoinstall:
     username: sysadmin
     # A password hash is needed. `mkpasswd --method=SHA-512` can help.
     # mkpasswd can be found in the package 'whois'
-    # here: 'ChangeMe' ... for testing
-    password: '$6$94XdJRnQqQTIkiqy$pMlmI8ouqW3GR2P8nYBAuFGItubjCjo7XZzVOkMN13T3u43gYZSAWUZZjqGFX86KAQ7OtB0kXiOflBedl5zlJ0'
+    # here: 'ChangeMe!' ... for testing
+    password: '$6$clBh4gKjvd.iuChK$HaeoMdUqnqb/teM4dzBWGpX5bueZuR6NmFPmtOI8FZMuh140gOkD4UfSIoyihKmQonRw8oSRGWvsd/8KESO1k/'
     hostname: premature
 
   storage:
@@ -147,8 +147,8 @@ autoinstall:
         type: dm_crypt
         volume: sys-part-3
         preserve: false
-        # here: 'ChangeMe' ... for testing
-        key: 'ChangeMe'
+        # here: 'ChangeMe!' ... for testing
+        key: 'ChangeMe!'
 
       - name: vg-system
         devices: [LVM_crypt]
@@ -491,7 +491,7 @@ autoinstall:
     # - curtin in-target -- systemctl enable rmLocalUsers.service
 
     # Bypass luks password prompt during rollouts
-    - /mnt/luksBypass.sh ChangeMe
+    - /mnt/luksBypass.sh ChangeMe!
 
     # Prepare semaphore delegated ansible rollout
     #!- apt install -y jq
