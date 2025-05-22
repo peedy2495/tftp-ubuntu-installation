@@ -12,10 +12,12 @@ declare -A hosts=(
     [ubuntu-noble-srv]=bc:24:11:4e:51:5b
     [ubuntu-test]=52:54:00:9b:01:63
     [cc02]=98:ee:cb:bb:f8:62
+    [cc02]=30:13:8b:21:ad:fe
 )
 
 declare -A IPs=(
     [ubuntu-noble-srv]=192.168.123.100
-    [ubuntu-test]=192.168.123.222
+    [ubuntu-test]=192.168.123.12
+    [cc02]=192.168.123.12
     [cc02]=192.168.123.12
 )

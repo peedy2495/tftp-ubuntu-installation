@@ -75,12 +75,12 @@ autoinstall:
   # 3. Prompt for user configuration on first boot.  Remove this identity
   #    section and see the "Installation without a default user" section.
   identity:
-    realname: sysadmin 
-    username: sysadmin
+    realname: temporary 
+    username: temporary
     # A password hash is needed. `mkpasswd --method=SHA-512` can help.
     # mkpasswd can be found in the package 'whois'
-    # here: 'ChangeMe!' ... for testing
-    password: '$6$clBh4gKjvd.iuChK$HaeoMdUqnqb/teM4dzBWGpX5bueZuR6NmFPmtOI8FZMuh140gOkD4UfSIoyihKmQonRw8oSRGWvsd/8KESO1k/'
+    # here: 'ChangeMe' ... for testing
+    password: '$6$94XdJRnQqQTIkiqy$pMlmI8ouqW3GR2P8nYBAuFGItubjCjo7XZzVOkMN13T3u43gYZSAWUZZjqGFX86KAQ7OtB0kXiOflBedl5zlJ0'
     hostname: premature
 
   storage:
@@ -147,8 +147,8 @@ autoinstall:
         type: dm_crypt
         volume: sys-part-3
         preserve: false
-        # here: 'ChangeMe!' ... for testing
-        key: 'ChangeMe!'
+        # here: 'ChangeMe' ... for testing
+        key: 'ChangeMe'
 
       - name: vg-system
         devices: [LVM_crypt]
@@ -254,7 +254,7 @@ autoinstall:
 
       - name: lv-root
         volgroup: lvm_volgroup-0
-        size: 100G
+        size: 20G
         wipe: superblock
         preserve: false
         type: lvm_partition
@@ -291,7 +291,7 @@ autoinstall:
 
       - name: lv-varlib
         volgroup: lvm_volgroup-0
-        size: 500G
+        size: 5G
         wipe: superblock
         preserve: false
         type: lvm_partition
@@ -491,11 +491,14 @@ autoinstall:
     # - curtin in-target -- systemctl enable rmLocalUsers.service
 
     # Bypass luks password prompt during rollouts
-    - /mnt/luksBypass.sh ChangeMe!
+    - /mnt/luksBypass.sh ChangeMe
 
     # Prepare semaphore delegated ansible rollout
     #!- apt install -y jq
     - /mnt/semaphore.sh 'Docker Desktops' 'Ubuntu Desktop 24.04 - CC rollout'
+
+    # Configure the Firewall
+    - /mnt/setFirewall.sh
 
     # Correct bootorder on secure boot systems
     - /mnt/setBootorder.sh

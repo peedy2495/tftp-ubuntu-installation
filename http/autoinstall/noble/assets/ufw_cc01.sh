@@ -27,12 +27,16 @@ curtin in-target --target=/target -- ufw allow out to 192.168.100.0/24
 # libvirt default network
 curtin in-target --target=/target -- ufw allow from 192.168.122.0/24
 curtin in-target --target=/target -- ufw allow out to 192.168.122.0/24
+curtin in-target --target=/target -- ufw allow in on virbr0 to any
+curtin in-target --target=/target -- ufw allow in out virbr0 to any
 # libvirt pxe network
 curtin in-target --target=/target -- ufw allow from 192.168.123.0/24
 curtin in-target --target=/target -- ufw allow out to 192.168.123.0/24
 # docker default network
 curtin in-target --target=/target -- ufw allow from 172.17.0.0/16
 curtin in-target --target=/target -- ufw allow out to 172.17.0.0/16
+curtin in-target --target=/target -- ufw allow in on docker0 to any
+curtin in-target --target=/target -- ufw allow in out docker0 to any
 
 echo "[*] Allow public services for PXE based installations on enp34s0..."
 curtin in-target --target=/target -- ufw allow in on enp34s0 to any port 80 proto tcp   # HTTP server
