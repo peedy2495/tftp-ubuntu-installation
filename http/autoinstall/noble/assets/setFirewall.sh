@@ -16,8 +16,8 @@ done
 if [ -f /mnt/ufw_${host}.sh ]; then
   /mnt/ufw_${host}.sh
   # Drop the ufw rules for future modification
-  sed 's/^curtin in-target --target=\/target -- //' /mnt/ufw_${host}.sh > /root/ufw_${host}.sh
+  sed 's/^curtin in-target --target=\/target -- //' /mnt/ufw_${host}.sh > /target/root/ufw_${host}.sh
   /mnt/ufw_default.sh
   # Drop the ufw rules for future modification
-  sed 's/^curtin in-target --target=\/target -- //' /mnt/ufw_default.sh > /root/ufw_default.sh
+  sed 's/^curtin in-target --target=\/target -- //' /mnt/ufw_default.sh > /target/root/ufw_default.sh
 fi

@@ -14,7 +14,6 @@ curtin in-target --target=/target -- ufw allow out 80/tcp         # HTTP (web br
 curtin in-target --target=/target -- ufw allow out 443/tcp        # HTTPS (web browsing, apt-get)
 curtin in-target --target=/target -- ufw allow out 53/udp         # DNS queries (UDP)
 curtin in-target --target=/target -- ufw allow out 53/tcp         # DNS fallback (TCP)
-curtin in-target --target=/target -- ufw allow out proto icmp     # (optional) ICMP for ping
 curtin in-target --target=/target -- ufw allow out 22/tcp         # SSH (remote to VMs)
 
 echo "[*] Allow NTP synchronization..."
@@ -25,7 +24,7 @@ echo "[*] Allow internal networks (libvirt, Docker)..."
 curtin in-target --target=/target -- ufw allow from 192.168.122.0/24
 curtin in-target --target=/target -- ufw allow out to 192.168.122.0/24
 curtin in-target --target=/target -- ufw allow in on virbr0 to any
-curtin in-target --target=/target -- ufw allow in out virbr0 to any
+curtin in-target --target=/target -- ufw allow out on virbr0 to any
 # libvirt pxe network
 curtin in-target --target=/target -- ufw allow from 192.168.123.0/24
 curtin in-target --target=/target -- ufw allow out to 192.168.123.0/24
@@ -33,7 +32,7 @@ curtin in-target --target=/target -- ufw allow out to 192.168.123.0/24
 curtin in-target --target=/target -- ufw allow from 172.17.0.0/16
 curtin in-target --target=/target -- ufw allow out to 172.17.0.0/16
 curtin in-target --target=/target -- ufw allow in on docker0 to any
-curtin in-target --target=/target -- ufw allow in out docker0 to any
+curtin in-target --target=/target -- ufw allow out on docker0 to any
 
 echo "[*] Enable UFW..."
 curtin in-target --target=/target -- ufw --force enable

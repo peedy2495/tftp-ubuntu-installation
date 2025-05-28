@@ -75,12 +75,12 @@ autoinstall:
   # 3. Prompt for user configuration on first boot.  Remove this identity
   #    section and see the "Installation without a default user" section.
   identity:
-    realname: temporary 
-    username: temporary
+    realname: sysadmin 
+    username: sysadmin
     # A password hash is needed. `mkpasswd --method=SHA-512` can help.
     # mkpasswd can be found in the package 'whois'
     # here: 'ChangeMe' ... for testing
-    password: '$6$94XdJRnQqQTIkiqy$pMlmI8ouqW3GR2P8nYBAuFGItubjCjo7XZzVOkMN13T3u43gYZSAWUZZjqGFX86KAQ7OtB0kXiOflBedl5zlJ0'
+    password: '$6$XCaCHexe5zO8hnib$G2x54KLNNZkVWiQgqm5U034RBTzzHyOD0D2CZjTXV7kGPx2x6nDae0vUlhHfA/tgcDWUedBhgMj5leAZZGn7J1'
     hostname: premature
 
   storage:
@@ -148,7 +148,7 @@ autoinstall:
         volume: sys-part-3
         preserve: false
         # here: 'ChangeMe' ... for testing
-        key: 'ChangeMe'
+        key: 'Mond098!'
 
       - name: vg-system
         devices: [LVM_crypt]
@@ -254,7 +254,7 @@ autoinstall:
 
       - name: lv-root
         volgroup: lvm_volgroup-0
-        size: 20G
+        size: 200G
         wipe: superblock
         preserve: false
         type: lvm_partition
@@ -307,29 +307,9 @@ autoinstall:
         type: mount
         id: lvm-mount-9
 
-      # ! ID related to home +1 -> config order: usage for rest of space @home
-      # - name: lv-develhome
-        # volgroup: lvm_volgroup-0
-        # size: 1G
-        # wipe: superblock
-        # preserve: false
-        # type: lvm_partition
-        # id: lvm_partition-11
-      # - fstype: ext4
-        # volume: lvm_partition-11
-        # preserve: false
-        # type: format
-        # label: DEVELHOME
-        # id: lvm-format-11
-      # - path: /home/devel
-        # device: lvm-format-11
-        # type: mount
-        # options: relatime,nosuid
-        # id: lvm-mount-11
-
       - name: lv-home
         volgroup: lvm_volgroup-0
-        size: -1
+        size: 300G
         wipe: superblock
         preserve: false
         type: lvm_partition
@@ -345,6 +325,26 @@ autoinstall:
         type: mount
         options: relatime,nodev,nosuid,noexec
         id: lvm-mount-10
+
+      #! ID related to home +1 -> config order: usage for rest of space @home
+      - name: lv-data
+        volgroup: lvm_volgroup-0
+        size: -1
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-11
+      - fstype: ext4
+        volume: lvm_partition-11
+        preserve: false
+        type: format
+        label: DATA
+        id: lvm-format-11
+      - path: /media/data
+        device: lvm-format-11
+        type: mount
+        options: relatime,nosuid
+        id: lvm-mount-11
 
   # Ubuntu Desktop uses the hwe flavor kernel by default.
   early-commands:
@@ -491,7 +491,7 @@ autoinstall:
     # - curtin in-target -- systemctl enable rmLocalUsers.service
 
     # Bypass luks password prompt during rollouts
-    - /mnt/luksBypass.sh ChangeMe
+    - /mnt/luksBypass.sh Mond098!
 
     # Prepare semaphore delegated ansible rollout
     #!- apt install -y jq
