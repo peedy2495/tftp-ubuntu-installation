@@ -13,6 +13,7 @@ declare -A hosts=(
     [ubuntu-test]=52:54:00:9b:01:63
     [cc02]=98:ee:cb:bb:f8:62
     [cc02]=30:13:8b:21:ad:fe
+    [cc03]=30:13:8b:22:7e:03
 )
 
 declare -A IPs=(
@@ -20,4 +21,5 @@ declare -A IPs=(
     [ubuntu-test]=192.168.123.12
     [cc02]=192.168.123.12
     [cc02]=192.168.123.12
+    [cc03]=192.168.123.12
 )
