@@ -494,7 +494,6 @@ autoinstall:
     - /mnt/luksBypass.sh ChangeMe
 
     # Prepare semaphore delegated ansible rollout
-    #!- apt install -y jq
     - /mnt/semaphore.sh 'Docker Desktops' 'Ubuntu Desktop 24.04 - caching all roles'
 
     # Configure the Firewall
