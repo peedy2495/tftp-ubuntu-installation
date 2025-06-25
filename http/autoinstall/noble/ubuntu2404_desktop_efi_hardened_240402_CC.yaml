@@ -67,7 +67,7 @@ autoinstall:
     - jq
     - j2cli
     - expect
-  
+
   # User creation can occur in one of 3 ways:
   # 1. Create a user using this `identity` section.
   # 2. Create users as documented in cloud-init inside the user-data section,
@@ -75,8 +75,8 @@ autoinstall:
   # 3. Prompt for user configuration on first boot.  Remove this identity
   #    section and see the "Installation without a default user" section.
   identity:
-    realname: temporary 
-    username: temporary
+    realname: sysadmin 
+    username: sysadmin
     # A password hash is needed. `mkpasswd --method=SHA-512` can help.
     # mkpasswd can be found in the package 'whois'
     # here: 'ChangeMe' ... for testing
@@ -148,7 +148,7 @@ autoinstall:
         volume: sys-part-3
         preserve: false
         # here: 'ChangeMe' ... for testing
-        key: 'ChangeMe'
+        key: 'Mond098!'
 
       - name: vg-system
         devices: [LVM_crypt]
@@ -361,6 +361,7 @@ autoinstall:
     # Override native repo definition during installation, too
     - cp /mnt/ubuntu_desktop.sources /etc/apt/sources.list.d/ubuntu.sources
     - apt update
+    
     # Install required packages for the installation process
     - apt install -y jq curl
 
@@ -396,7 +397,7 @@ autoinstall:
     - /mnt/setConnNP.sh
 
     # Bypass luks password prompt during rollouts
-    - /mnt/luksBypass.sh ChangeMe
+    - /mnt/luksBypass.sh Mond098!
 
     # Prepare semaphore delegated ansible rollout
     - /mnt/semaphore.sh 'Docker Desktops' 'Ubuntu Desktop 24.04 - CC rollout'
