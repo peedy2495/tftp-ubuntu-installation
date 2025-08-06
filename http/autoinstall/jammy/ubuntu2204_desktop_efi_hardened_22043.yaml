@@ -833,6 +833,9 @@ autoinstall:
     # Remove update notifications - causes errors on removed snapd
     - curtin in-target --target=/target -- apt-get --purge -y --quiet=2 remove update-notifier-common
 
+    # Keep cloud-init, as it performs some of the installation on first boot.
+    - curtin in-target -- apt-get install --reinstall -y cloud-init
+
     # Install desktop related patterns and packages
     - >-
       curtin in-target -- apt-get install -y --install-recommends
@@ -863,9 +866,6 @@ autoinstall:
       plymouth-label
       plymouth-theme-spinner
       plymouth-theme-ubuntu-text
-
-    # Keep cloud-init, as it performs some of the installation on first boot.
-    - curtin in-target -- apt-get install -y cloud-init
 
     # Enable the boot splash
     - >-
