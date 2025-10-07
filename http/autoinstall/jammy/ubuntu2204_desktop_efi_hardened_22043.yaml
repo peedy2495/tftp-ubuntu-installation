@@ -672,7 +672,7 @@ autoinstall:
 
       - name: lv-root
         volgroup: lvm_volgroup-0
-        size: 20G
+        size: 40G
         wipe: superblock
         preserve: false
         type: lvm_partition
