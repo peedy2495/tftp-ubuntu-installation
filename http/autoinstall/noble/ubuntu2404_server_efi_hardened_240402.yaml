@@ -1,0 +1,379 @@
+#cloud-config
+autoinstall:
+  # version is an Autoinstall required field.
+  version: 1
+
+  keyboard:
+    layout: de
+
+  source:
+     id: ubuntu-server
+
+  reporting:
+    builtin:
+      type: print
+
+  apt:
+    #preserve_sources_list: false
+    conf: |
+      Acquire::http::nexus-c2::8081::Verify-Peer "false";
+      Acquire::http::nexus-c2::8081::Verify-Host "false";
+    # This section doen't work in ubuntu server 24.04 up to subrelease 5!
+    sources_list: | 
+      Types: deb
+      URIs: http://nexus-c2:8081/repository/ubuntu-noble-srv
+      Suites: noble
+      Components: main restricted universe multiverse
+      Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+      Types: deb
+      URIs: http://nexus-c2:8081/repository/ubuntu-noble-srv-updates
+      Suites: noble-updates
+      Components: main restricted universe multiverse
+      Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+      Types: deb
+      URIs: http://nexus-c2:8081/repository/ubuntu-noble-srv-backports
+      Suites: noble-backports
+      Components: main restricted universe multiverse
+      Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+      Types: deb
+      URIs: http://nexus-c2:8081/repository/ubuntu-noble-srv-security
+      Suites: noble-security
+      Components: main restricted universe multiverse
+      Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+  packages:
+    - openssh-server
+    - openssh-client
+    - curl
+    - jq
+    - j2cli
+    - expect
+
+  # User creation can occur in one of 3 ways:
+  # 1. Create a user using this `identity` section.
+  # 2. Create users as documented in cloud-init inside the user-data section,
+  #    which means this single-user identity section may be removed.
+  # 3. Prompt for user configuration on first boot.  Remove this identity
+  #    section and see the "Installation without a default user" section.
+  identity:
+    realname: sysadmin 
+    username: sysadmin
+    # A password hash is needed. `mkpasswd --method=SHA-512` can help.
+    # mkpasswd can be found in the package 'whois'
+    # here: 'ChangeMe' ... for testing
+    password: '$6$94XdJRnQqQTIkiqy$pMlmI8ouqW3GR2P8nYBAuFGItubjCjo7XZzVOkMN13T3u43gYZSAWUZZjqGFX86KAQ7OtB0kXiOflBedl5zlJ0'
+    hostname: premature
+
+  storage:
+    swap:
+      size: 0
+    config:
+      - id: system-disk
+        type: disk
+        preserve: false
+        wipe: superblock-recursive
+        ptable: gpt
+        grub_device: false
+        match:
+          size: smallest
+
+      - device: system-disk
+        type: partition
+        wipe: superblock
+        flag: boot
+        id: sys-part-1
+        number: 1
+        size: 1G
+        offset: 1048576
+        grub_device: true
+      - fstype: fat32
+        volume: sys-part-1
+        preserve: false
+        type: format
+        label: EFI
+        id: sys-format-1
+      - path: /boot/efi
+        device: sys-format-1
+        type: mount
+        id: mount-1
+
+      - device: system-disk
+        size: 2G
+        wipe: superblock
+        number: 2
+        preserve: false
+        type: partition
+        id: sys-part-2
+      - fstype: ext4
+        volume: sys-part-2
+        preserve: false
+        type: format
+        label: BOOT
+        id: sys-format-2
+      - path: /boot
+        device: sys-format-2
+        type: mount
+        id: mount-2
+
+      - device: system-disk
+        size: -1
+        wipe: superblock
+        number: 3
+        preserve: false
+        grub_device: false
+        type: partition
+        id: sys-part-3
+
+      - name: vg-system
+        devices: [sys-part-3]
+        preserve: false
+        type: lvm_volgroup
+        id: lvm_volgroup-0
+
+      - name: lv-varlog
+        volgroup: lvm_volgroup-0
+        size: 10G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-2
+      - fstype: ext4
+        volume: lvm_partition-2
+        preserve: false
+        type: format
+        label: VARLOG
+        id: lvm-format-2
+      - path: /var/log
+        device: lvm-format-2
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-2
+
+      - name: lv-mnt
+        volgroup: lvm_volgroup-0
+        size: 4K
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-3
+      - fstype: ext4
+        volume: lvm_partition-3
+        preserve: false
+        type: format
+        label: MNT
+        id: lvm-format-3
+      - path: /var/mnt
+        device: lvm-format-3
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-3
+
+      - name: lv-vartmp
+        volgroup: lvm_volgroup-0
+        size: 10G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-4
+      - fstype: ext4
+        volume: lvm_partition-4
+        preserve: false
+        type: format
+        label: VARTMP
+        id: lvm-format-4
+      - path: /var/tmp
+        device: lvm-format-4
+        type: mount
+        # noexec not activated, because of ansible needs
+        options: relatime,nodev,nosuid
+        id: lvm-mount-4
+
+      - name: lv-varlogaudit
+        volgroup: lvm_volgroup-0
+        size: 10G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-5
+      - fstype: ext4
+        volume: lvm_partition-5
+        preserve: false
+        type: format
+        label: VARLOGAUDIT
+        id: lvm-format-5
+      - path: /var/log/audit
+        device: lvm-format-5
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-5
+
+      - name: lv-opt
+        volgroup: lvm_volgroup-0
+        size: 5G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-6
+      - fstype: ext4
+        volume: lvm_partition-6
+        preserve: false
+        type: format
+        label: OPT
+        id: lvm-format-6
+      - path: /opt
+        device: lvm-format-6
+        type: mount
+        options: relatime,nodev,nosuid
+        id: lvm-mount-6
+
+      - name: lv-root
+        volgroup: lvm_volgroup-0
+        size: 20G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-7
+      - fstype: ext4
+        volume: lvm_partition-7
+        preserve: false
+        type: format
+        label: ROOT
+        id: lvm-format-7
+      - path: /
+        device: lvm-format-7
+        type: mount
+        id: lvm-mount-7
+
+      - name: lv-tmp
+        volgroup: lvm_volgroup-0
+        size: 5G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-8
+      - fstype: ext4
+        volume: lvm_partition-8
+        preserve: false
+        type: format
+        label: TMP
+        id: lvm-format-8
+      - path: /tmp
+        device: lvm-format-8
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-8
+
+      - name: lv-home
+        volgroup: lvm_volgroup-0
+        size: 10G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-9
+      - fstype: ext4
+        volume: lvm_partition-9
+        preserve: false
+        type: format
+        label: HOME
+        id: lvm-format-9
+      - path: /home
+        device: lvm-format-9
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-9
+
+      - name: lv-varlib
+        volgroup: lvm_volgroup-0
+        size: -1
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-10
+      - fstype: ext4
+        volume: lvm_partition-10
+        preserve: false
+        type: format
+        label: VARLIB
+        id: lvm-format-10
+      - path: /var/lib
+        device: lvm-format-10
+        type: mount
+        id: lvm-mount-10
+        
+  early-commands:    
+    # Mount temporary ramdisk for additional data
+    - mount -t tmpfs -o size=512M tmpfs /mnt
+    
+    # Pull additional data for installation process
+    #!- wget -P /mnt -r -nH --cut-dirs=3 -np http://$(cat /proc/cmdline |awk -F' ' '{print $4}'|awk -F'/' '{print $3}')/autoinstall/noble/assets/
+    - wget -P /mnt -r -nH --cut-dirs=3 -np http://$(cat /proc/cmdline |awk -F' ' '{print $4}'|awk -F'/' '{print $3}')/autoinstall/noble/assets/
+    - chmod +x /mnt/*.sh
+
+    # Set ubuntu-proxy in hosts
+    - /mnt/setHosts.sh /etc/hosts
+
+    # Override native repo definition during installation in the current environment, too
+    - cp /mnt/ubuntu_server.sources /etc/apt/sources.list.d/ubuntu.sources
+    - apt update
+
+    # Install required packages for the installation process in the current environment
+    - apt install -y jq curl
+
+  # The live-server ISO does not contain some of the required packages,
+  # such as ubuntu-desktop or the hwe kernel (or most of their depdendencies).
+  # The system being installed will need some sort of apt access.
+  # proxy: http://192.168.0.1:3142
+
+  late-commands:
+
+    # Use repo proxy for pulling packages
+    - /mnt/setHosts.sh /target/etc/hosts
+
+    # Preserve abuses and unwanted changes on additional repo sources
+    - /mnt/lockRepos.sh
+
+    # Upgrate the system to the latest packages
+    - curtin in-target --target=/target -- apt upgrade -y
+
+    # Preserve abuses on vulnerable system parts
+    - /mnt/modFsTab.sh
+
+    # Fetch current repo states
+    - curtin in-target --target=/target -- apt-get update
+
+    # Finally, remove things only installed as dependencies of other things we have already removed.
+    - curtin in-target -- apt-get autoremove --purge -y --quiet=2
+
+    # Set detailed localization
+    - ln -fs /usr/share/zoneinfo/Europe/Berlin /target/etc/localtime
+
+    # Preserve kernel command-line parameters for debugging
+    - cat /proc/cmdline >/target/var/log/installer/cmdline
+
+    # Configure netplan and network related system parts
+    - /mnt/setConnNP.sh
+
+  # Additional cloud-init section for final finish
+
+  user-data:
+    disable_root: true
+    ssh_pwauth: false
+
+    users:
+      - name: ansible
+        uid: 64001
+        primary_group: users
+        groups: sudo
+        lock_passwd: true
+        shell: /bin/bash
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        # dont't worry ... this ssh key will never be used in real environments ;-) 
+        ssh_authorized_keys:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINLFljoNdv6M6uKzKfkQbXGdEO/hs0zK3v9tp/v08pgo ansible@testing"
+
+    # reboot after first host initial provisioning
+    power_state:
+      mode: reboot

@@ -1,0 +1,452 @@
+#cloud-config
+autoinstall:
+  # version is an Autoinstall required field.
+  version: 1
+  #mode: oem
+
+  keyboard:
+    layout: de
+
+  source:
+     id: ubuntu-desktop
+
+  reporting:
+    builtin:
+      type: print
+
+  apt:
+    preserve_sources_list: false
+    conf: |
+      Acquire::http::nexus-c2::8081::Verify-Peer "false";
+      Acquire::http::nexus-c2::8081::Verify-Host "false";
+    sources_list: |
+      deb http://nexus-c2:8081/repository/ubuntu-noble-desktop noble main restricted universe multiverse
+      deb http://nexus-c2:8081/repository/ubuntu-noble-desktop-updates noble-updates main restricted universe multiverse
+      deb http://nexus-c2:8081/repository/ubuntu-noble-desktop-backports noble-backports main restricted universe multiverse
+      deb http://nexus-c2:8081/repository/ubuntu-noble-desktop-security noble-security main restricted universe multiverse
+    #sources:
+    #  #Add mozilla package source
+    #  ppa-xtradeb-applications:
+    #    source: deb http://nexus-c2:8081/repository/ubuntu-noble-desktop-ppa-xtradeb-applications noble main
+    #    key: |
+    #      -----BEGIN PGP PUBLIC KEY BLOCK-----
+    #      Comment: Hostname: 
+    #      Version: Hockeypuck 2.2
+#
+    #      xsFNBF+pJfEBEADmJ5l2tbdD1kDqOCPqPc1QVoDqj0qsQ4byihHacOXZCHhPXnu3
+    #      422//21fi5PvLvb+m2IqhMxXvHMW5XwScEWdNYpD3JhMmZHsk/Oe8b214Z88+LGf
+    #      HoCDyT3fO331vN5fmVpC6AxiszwM9HY/oXfb/VPYZ6nRPyBtU7JPqNtOMLe2RWQo
+    #      WpYGhyCQtn44GQZccw17paQSuC4Y1lY5eb7KpPiPhU8Nm623XnydJd7LNq+MZh+A
+    #      57SXft4oZTclWnYDDWbk0b1L9R1AND9igkI0V00aKs/sj6tVweNS+HsqoSpmwpRt
+    #      /PSC/UZ++KNBnub0Jw2kuO54o3tzeA6sy0Q7Hbz+nFWcI+oxjVofa+TRZSR/3c3R
+    #      ZHnk90GnhVw4lIdVzPvde/rsXhwQMjqdesmW1sM+oOF/Mh9ZUBmyypOd83j4oKyf
+    #      eSQ7E9JEb/kPzpKOkZydnsrjGq/TWNZoaf4U7DJvZ+Y6a2MC55L7en2HuI5HNyFQ
+    #      V2O/IuHUxoINlEuT/oCI0yNg+B8Og5L0+9HOw+YggDLASGpwao8hPOIRgixL9XCU
+    #      Z4CTdPgQLxwAo/1TySO0WKc8rxubSXXydNi4s5iicVRbECbQurLc1Y9ssNXkB4kf
+    #      8KEznGahO1dTEZ+XtIuyXInB3WbxN3bbV6Cs/tUkJ0KuzungEPG4LzpVWQARAQAB
+    #      zSVMYXVuY2hwYWQgUFBBIGZvciB4dHJhZGViIFVidW50dSB0ZWFtwsGOBBMBCgA4
+    #      FiEEUwH6T9kyRPvG9hSZgrtoUcZPaIAFAl+pJfECGwMFCwkIBwIGFQoJCAsCBBYC
+    #      AwECHgECF4AACgkQgrtoUcZPaIBwfRAAvFV6+Ff7zN5Eti/N9XJ7O8lv8UEUUDPp
+    #      rDLiGoSeJQaeay/JYWRg96r2XSkw3tSWeBk/EixR5onOFGK/rT+6QlB9nqug+fQI
+    #      ZpDybTRBYHETAYStkYYDHTBhsPpKnBFilei232Z1C3cMniIGTgtYZYcM3MH92fVd
+    #      /7SCy4tPUvLSdAmzmGQzLX+qEXJO/u3i+4Vc1dbu6GdPeEhXGwQLmlnPmdXbGipa
+    #      +Bpd+DB7++xMJMwBoHIT+8Nh9HMguxNycCy6Iz3O29Onl0QYkMnhy6mKl5z/Pqqm
+    #      T9V1K9YZlme11+RSGJMBj6pJkCqh60LjcBxIsN62EMASCTCyyC5syWy5vMpek2Ji
+    #      CjJorm3+WsT8iDJgxaSakXEzfvX8QWMK56hgpAAZFpl6EQm514qEHGKvrR2enwTW
+    #      mRziYjrOdCNk76flVom+1Gns+F21pM6toxxUH4ESE+isvQGpnTLz+hDrqZkoVupn
+    #      CCEnobsyYcT7U9l4DgksWHJZiP7Ht+/VmC87SP0B4ATg1ysHZrpBfV/7ddoyJ+6N
+    #      v1rr9mcSXofUZVYgIG2q0NW9hRObHunWs3gkzjpAQ+Vp6syvCV0BA2QnX1RmImqt
+    #      drCV7If++7t19PUmEjDHzK4QpFbpPmQ0APjkzQ7SP6qQsd6Ftdlu1muhCGOBbUxE
+    #      +2FGi8kHKqg=
+    #      =3I/o
+    #      -----END PGP PUBLIC KEY BLOCK-----
+  packages:
+    - openssh-server
+    - openssh-client
+    - curl
+    - jq
+    - j2cli
+    - expect
+  
+  # User creation can occur in one of 3 ways:
+  # 1. Create a user using this `identity` section.
+  # 2. Create users as documented in cloud-init inside the user-data section,
+  #    which means this single-user identity section may be removed.
+  # 3. Prompt for user configuration on first boot.  Remove this identity
+  #    section and see the "Installation without a default user" section.
+  identity:
+    realname: temporary 
+    username: temporary
+    # A password hash is needed. `mkpasswd --method=SHA-512` can help.
+    # mkpasswd can be found in the package 'whois'
+    # here: 'ChangeMe' ... for testing
+    password: '$6$aHKCyfzqujeKn28y$fIwbzTFSIRIBSE9JGB3hoJxuVWIf9cTYbAdEcSAqtNWHiu9qSamQe7n5/U/kPdsvgisTFFwvcvRPa6ctqqUxI/'
+    hostname: premature
+
+  storage:
+    swap:
+      size: 0
+    config:
+      - id: system-disk
+        type: disk
+        preserve: false
+        wipe: superblock-recursive
+        ptable: gpt
+        grub_device: false
+        match:
+          size: smallest
+
+      - device: system-disk
+        type: partition
+        wipe: superblock
+        flag: boot
+        id: sys-part-1
+        number: 1
+        size: 1G
+        offset: 1048576
+        grub_device: true
+      - fstype: fat32
+        volume: sys-part-1
+        preserve: false
+        type: format
+        label: EFI
+        id: sys-format-1
+      - path: /boot/efi
+        device: sys-format-1
+        type: mount
+        id: mount-1
+
+      - device: system-disk
+        size: 2G
+        wipe: superblock
+        number: 2
+        preserve: false
+        type: partition
+        id: sys-part-2
+      - fstype: ext4
+        volume: sys-part-2
+        preserve: false
+        type: format
+        label: BOOT
+        id: sys-format-2
+      - path: /boot
+        device: sys-format-2
+        type: mount
+        id: mount-2
+
+      - device: system-disk
+        size: -1
+        wipe: superblock
+        number: 3
+        preserve: false
+        grub_device: false
+        type: partition
+        id: sys-part-3
+
+      - id: LVM_crypt
+        type: dm_crypt
+        volume: sys-part-3
+        preserve: false
+        # here: 'ChangeMe' ... for testing
+        key: 'ChangeMe'
+
+      - name: vg-system
+        devices: [LVM_crypt]
+        preserve: false
+        type: lvm_volgroup
+        id: lvm_volgroup-0
+
+      - name: lv-varlog
+        volgroup: lvm_volgroup-0
+        size: 10G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-2
+      - fstype: ext4
+        volume: lvm_partition-2
+        preserve: false
+        type: format
+        label: VARLOG
+        id: lvm-format-2
+      - path: /var/log
+        device: lvm-format-2
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-2
+
+      - name: lv-mnt
+        volgroup: lvm_volgroup-0
+        size: 4K
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-3
+      - fstype: ext4
+        volume: lvm_partition-3
+        preserve: false
+        type: format
+        label: MNT
+        id: lvm-format-3
+      - path: /var/mnt
+        device: lvm-format-3
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-3
+
+      - name: lv-vartmp
+        volgroup: lvm_volgroup-0
+        size: 10G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-4
+      - fstype: ext4
+        volume: lvm_partition-4
+        preserve: false
+        type: format
+        label: VARTMP
+        id: lvm-format-4
+      - path: /var/tmp
+        device: lvm-format-4
+        type: mount
+        # noexec not activated, because of ansible needs
+        options: relatime,nodev,nosuid
+        id: lvm-mount-4
+
+      - name: lv-varlogaudit
+        volgroup: lvm_volgroup-0
+        size: 10G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-5
+      - fstype: ext4
+        volume: lvm_partition-5
+        preserve: false
+        type: format
+        label: VARLOGAUDIT
+        id: lvm-format-5
+      - path: /var/log/audit
+        device: lvm-format-5
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-5
+
+      - name: lv-opt
+        volgroup: lvm_volgroup-0
+        size: 5G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-6
+      - fstype: ext4
+        volume: lvm_partition-6
+        preserve: false
+        type: format
+        label: OPT
+        id: lvm-format-6
+      - path: /opt
+        device: lvm-format-6
+        type: mount
+        options: relatime,nodev,nosuid
+        id: lvm-mount-6
+
+      - name: lv-root
+        volgroup: lvm_volgroup-0
+        size: 20G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-7
+      - fstype: ext4
+        volume: lvm_partition-7
+        preserve: false
+        type: format
+        label: ROOT
+        id: lvm-format-7
+      - path: /
+        device: lvm-format-7
+        type: mount
+        id: lvm-mount-7
+
+      - name: lv-tmp
+        volgroup: lvm_volgroup-0
+        size: 5G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-8
+      - fstype: ext4
+        volume: lvm_partition-8
+        preserve: false
+        type: format
+        label: TMP
+        id: lvm-format-8
+      - path: /tmp
+        device: lvm-format-8
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-8
+
+      - name: lv-varlib
+        volgroup: lvm_volgroup-0
+        size: 5G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-9
+      - fstype: ext4
+        volume: lvm_partition-9
+        preserve: false
+        type: format
+        label: VARLIB
+        id: lvm-format-9
+      - path: /var/lib
+        device: lvm-format-9
+        type: mount
+        id: lvm-mount-9
+
+      # ! ID related to home +1 -> config order: usage for rest of space @home
+      - name: lv-develhome
+        volgroup: lvm_volgroup-0
+        size: 1G
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-10
+      - fstype: ext4
+        volume: lvm_partition-10
+        preserve: false
+        type: format
+        label: DEVELHOME
+        id: lvm-format-10
+      - path: /home/devel
+        device: lvm-format-10
+        type: mount
+        options: relatime,nosuid
+        id: lvm-mount-10
+
+      - name: lv-home
+        volgroup: lvm_volgroup-0
+        size: -1
+        wipe: superblock
+        preserve: false
+        type: lvm_partition
+        id: lvm_partition-11
+      - fstype: ext4
+        volume: lvm_partition-11
+        preserve: false
+        type: format
+        label: HOME
+        id: lvm-format-11
+      - path: /home
+        device: lvm-format-11
+        type: mount
+        options: relatime,nodev,nosuid,noexec
+        id: lvm-mount-11
+
+  # Ubuntu Desktop uses the hwe flavor kernel by default.
+  early-commands:    
+    # Mount temporary ramdisk for additional data
+    - mount -t tmpfs -o size=512M tmpfs /mnt
+    
+    # Pull additional data for installation process
+    - wget -P /mnt -r -nH --cut-dirs=3 -np http://$(cat /proc/cmdline |awk -F' ' '{print $4}'|awk -F'/' '{print $3}')/autoinstall/noble/assets/
+    - chmod +x /mnt/*.sh
+
+    # Set nexus-c2 in hosts
+    - /mnt/setHosts.sh /etc/hosts
+
+    # Override native repo definition during installation, too
+    - cp /mnt/ubuntu_desktop.sources /etc/apt/sources.list.d/ubuntu.sources
+    - apt update
+    # Install required packages for the installation process
+    - apt install -y jq curl
+
+  late-commands:
+    # Use repo proxy for pulling packages
+    - /mnt/setHosts.sh /target/etc/hosts
+
+    # Change permissions for the /home/devel mount
+    - curtin in-target --target=/target -- chgrp sudo /home/devel
+    - curtin in-target --target=/target -- chmod 0770 /home/devel
+
+    # Preserve abuses and unwanted changes on additional repo sources
+    - /mnt/lockRepos.sh
+
+    # Preserve abuses on vulnerable system parts
+    - /mnt/modFsTab.sh
+
+    # Fetch current repo states
+    - curtin in-target --target=/target -- apt-get update
+
+    # Remove update notifications - causes errors on removed snapd
+    - curtin in-target --target=/target -- apt-get --purge -y --quiet=2 remove update-notifier-common
+
+    # Remove graphical software-center, because of issues with removed snap env and remote managed machines 
+    - curtin in-target --target=/target -- apt-get --purge -y --quiet=2 remove software-properties-gtk
+
+    # Finally, remove things only installed as dependencies of other things we have already removed.
+    - curtin in-target -- apt-get autoremove --purge -y --quiet=2
+
+    # Set detailed localization
+    - ln -fs /usr/share/zoneinfo/Europe/Berlin /target/etc/localtime
+
+    # Disable bloat and too informative stuff
+    #?- sed -i 's/ENABLED=1/ENABLED=0/' /target/etc/default/motd-news
+    #?- ln -fs /dev/null /target/etc/systemd/system/motd-news.service
+    #?- ln -fs /dev/null /target/etc/systemd/system/motd-news.timer
+    #?- ln -fs /dev/null /target/etc/systemd/system/plymouth-quit-wait.service
+    #?- ln -fs /dev/null /target/etc/systemd/system/plymouth-start.service
+    #?- rm -f /target/etc/update-motd.d/10-help-text
+
+    # Preserve kernel command-line parameters for debugging
+    - cat /proc/cmdline >/target/var/log/installer/cmdline
+
+    # Configure NetworkManager and network related system parts
+    - /mnt/setConnNP.sh
+
+    # preserve using local users for using LDAP, only
+    - cp /mnt/rmLocalUsers /target/usr/local/sbin/
+    - chmod 0700  /target/usr/local/sbin/rmLocalUsers
+    - cp /mnt/rmLocalUsers.service /target/etc/systemd/system/
+    - chmod 0600  /target/etc/systemd/system/rmLocalUsers.service
+    - curtin in-target -- systemctl enable rmLocalUsers.service
+
+    # Bypass luks password prompt during rollouts
+    - /mnt/luksBypass.sh ChangeMe
+
+    # Prepare semaphore delegated ansible rollout
+    - /mnt/semaphore.sh 'Docker Desktops' 'Ubuntu Desktop 24.04 - caching all roles'
+
+    # Configure the Firewall
+    - /mnt/setFirewall.sh
+
+    # Correct bootorder on secure boot systems
+    - /mnt/setBootorder.sh
+
+    # Set a Warning-Frame to the login-screen
+    - /mnt/setGreeterInstallationFrame.sh
+
+  # Additional cloud-init section for final finish
+
+  user-data:
+    disable_root: true
+    ssh_pwauth: false
+
+    users:
+      - name: ansible
+        uid: 64001
+        primary_group: users
+        groups: sudo
+        lock_passwd: true
+        shell: /bin/bash
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        # dont't worry ... this ssh key will never be used in real environments ;-) 
+        ssh_authorized_keys:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINLFljoNdv6M6uKzKfkQbXGdEO/hs0zK3v9tp/v08pgo ansible@testing"
+
+    # reboot after first host initial provisioning
+    power_state:
+      mode: reboot

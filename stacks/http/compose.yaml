@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  webserver:
+    image: pierrezemb/gostatic:latest
+    restart: always
+    ports:
+    - "8080:8043"
+    volumes:
+    - /media/docker/tftp-ubuntu-installation/http:/srv/http
