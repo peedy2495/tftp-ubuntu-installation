@@ -905,7 +905,8 @@ autoinstall:
     - curtin in-target -- systemctl enable rmLocalUsers.service
 
     # Bypass luks password prompt during rollouts
-    - /mnt/luksBypass.sh ChangeMe
+    #- /mnt/luksBypass.sh ChangeMe
+    - /mnt/luksRcUnlock.sh 22022
 
     # Prepare semaphore delegated ansible rollout
     - apt install -y jq
