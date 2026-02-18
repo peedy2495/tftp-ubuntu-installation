@@ -59,7 +59,7 @@ if [[ ! -e ./tmp ]]; then
 fi
 
 # prepare Ubuntu Jammy for netboot
-OS_IMAGE=ubuntu-22.04.3-live-server-amd64.iso
+OS_IMAGE=ubuntu-22.04.4-live-server-amd64.iso
 if [[ ! -e boot/jammy ]]; then
     mkdir ./boot/jammy
     wget -nc -P ./tmp  http://$NEXUS/repository/ubuntu-releases/22.04/$OS_IMAGE

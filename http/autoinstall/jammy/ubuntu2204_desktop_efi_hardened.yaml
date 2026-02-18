@@ -8,6 +8,9 @@ autoinstall:
 
   apt:
     preserve_sources_list: false
+    conf: |
+      Acquire::http::ubuntu-proxy::8081::Verify-Peer "false";
+      Acquire::http::ubuntu-proxy::8081::Verify-Host "false";
     sources_list: |
       deb http://ubuntu-proxy:8081/repository/ubuntu-jammy jammy main restricted
       deb http://ubuntu-proxy:8081/repository/ubuntu-jammy-updates jammy-updates main restricted
