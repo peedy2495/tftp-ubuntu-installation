@@ -11,7 +11,7 @@ declare -A hosts=(
     [n0a]=00:bf
     [cc01]=c8:d9:d2:0f:d6:6f
     [ubuntu-test]=52:54:00:9b:01:63
-    [ubuntu-x2]=52:54:00:35:e4:5a
+    [ubuntu-x2]=52:54:00:f9:ea:13
 )
 
 declare -A IPs=(
