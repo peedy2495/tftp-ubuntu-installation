@@ -148,7 +148,7 @@ autoinstall:
         volume: sys-part-3
         preserve: false
         # here: 'ChangeMe' ... for testing
-        key: 'Mond098!'
+        key: 'ChangeMe'
 
       - name: vg-system
         devices: [LVM_crypt]

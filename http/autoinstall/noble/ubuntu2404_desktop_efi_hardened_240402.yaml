@@ -67,7 +67,7 @@ autoinstall:
     - jq
     - j2cli
     - expect
-  
+
   # User creation can occur in one of 3 ways:
   # 1. Create a user using this `identity` section.
   # 2. Create users as documented in cloud-init inside the user-data section,
