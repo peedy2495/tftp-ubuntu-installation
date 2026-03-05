@@ -360,9 +360,7 @@ autoinstall:
 
     # Override native repo definition during installation, too
     - cp /mnt/ubuntu_desktop.sources /etc/apt/sources.list.d/ubuntu.sources
-    - apt update
-    # Install required packages for the installation process
-    - apt install -y jq curl
+    - curtin in-target -- apt update
 
   late-commands:
     # Use repo proxy for pulling packages

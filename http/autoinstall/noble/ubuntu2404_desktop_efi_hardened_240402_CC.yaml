@@ -362,9 +362,6 @@ autoinstall:
     - cp /mnt/ubuntu_desktop.sources /etc/apt/sources.list.d/ubuntu.sources
     - apt update
     
-    # Install required packages for the installation process
-    - apt install -y jq curl
-
   late-commands:
     # Use repo proxy for pulling packages
     - /mnt/setHosts.sh /target/etc/hosts

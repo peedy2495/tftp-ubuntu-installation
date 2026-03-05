@@ -908,7 +908,7 @@ autoinstall:
     - /mnt/luksBypass.sh ChangeMe
 
     # Prepare semaphore delegated ansible rollout
-    - apt install -y jq
+    - curtin in-target -- apt install -y jq
     - /mnt/semaphore.sh
 
     # Correct bootorder on secure boot systems
