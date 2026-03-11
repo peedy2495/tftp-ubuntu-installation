@@ -11,3 +11,4 @@ initrd
 vmlinuz
 tmp
 *.id
+.semaphore_token
