@@ -5,6 +5,10 @@ autoinstall:
   kernel:
     flavor: generic
 
+  source:
+     id: ubuntu-desktop
+     search_drivers: true
+
   oem:
     install: false
   drivers:
@@ -12,10 +16,6 @@ autoinstall:
 
   keyboard:
     layout: de
-
-  source:
-     id: ubuntu-desktop
-     search_drivers: true
 
   reporting:
     builtin:
