@@ -1,14 +1,21 @@
 #cloud-config
 autoinstall:
-  # version is an Autoinstall required field.
   version: 1
-  #mode: oem
+
+  kernel:
+    flavor: generic
+
+  oem:
+    install: false
+  drivers:
+    install: true
 
   keyboard:
     layout: de
 
   source:
      id: ubuntu-desktop
+     search_drivers: true
 
   reporting:
     builtin:
@@ -148,7 +155,7 @@ autoinstall:
         volume: sys-part-3
         preserve: false
         # here: 'ChangeMe' ... for testing
-        key: 'ChangeMe'
+        key: 'Mond098!'
 
       - name: vg-system
         devices: [LVM_crypt]
@@ -254,7 +261,7 @@ autoinstall:
 
       - name: lv-root
         volgroup: lvm_volgroup-0
-        size: 200G
+        size: 100G
         wipe: superblock
         preserve: false
         type: lvm_partition
@@ -309,7 +316,7 @@ autoinstall:
 
       - name: lv-home
         volgroup: lvm_volgroup-0
-        size: 300G
+        size: 100G
         wipe: superblock
         preserve: false
         type: lvm_partition
@@ -345,8 +352,7 @@ autoinstall:
         type: mount
         options: relatime,nosuid
         id: lvm-mount-11
-
-  # Ubuntu Desktop uses the hwe flavor kernel by default.
+        
   early-commands:    
     # Mount temporary ramdisk for additional data
     - mount -t tmpfs -o size=512M tmpfs /mnt

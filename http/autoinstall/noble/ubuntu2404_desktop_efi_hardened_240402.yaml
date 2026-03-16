@@ -346,8 +346,7 @@ autoinstall:
         options: relatime,nodev,nosuid,noexec
         id: lvm-mount-11
 
-  # Ubuntu Desktop uses the hwe flavor kernel by default.
-  early-commands:    
+    early-commands:    
     # Mount temporary ramdisk for additional data
     - mount -t tmpfs -o size=512M tmpfs /mnt
     
