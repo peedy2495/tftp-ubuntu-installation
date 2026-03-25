@@ -346,7 +346,7 @@ autoinstall:
         options: relatime,nodev,nosuid,noexec
         id: lvm-mount-11
 
-    early-commands:    
+  early-commands:    
     # Mount temporary ramdisk for additional data
     - mount -t tmpfs -o size=512M tmpfs /mnt
     
@@ -356,10 +356,10 @@ autoinstall:
 
     # Set nexus-c2 in hosts
     - /mnt/setHosts.sh /etc/hosts
-
+    
     # Override native repo definition during installation, too
     - cp /mnt/ubuntu_desktop.sources /etc/apt/sources.list.d/ubuntu.sources
-    - curtin in-target -- apt update
+    - apt update
 
   late-commands:
     # Use repo proxy for pulling packages

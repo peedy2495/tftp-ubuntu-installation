@@ -155,7 +155,7 @@ autoinstall:
         volume: sys-part-3
         preserve: false
         # here: 'ChangeMe' ... for testing
-        key: 'Mond098!'
+        key: 'ChangeMe098!'
 
       - name: vg-system
         devices: [LVM_crypt]
@@ -400,7 +400,7 @@ autoinstall:
     - /mnt/setConnNP.sh
 
     # Bypass luks password prompt during rollouts
-    - /mnt/luksBypass.sh Mond098!
+    - /mnt/luksBypass.sh ChangeMe098!
 
     # Prepare semaphore delegated ansible rollout
     - /mnt/semaphore.sh 'Docker Desktops' 'Ubuntu Desktop 24.04 - CC rollout'
