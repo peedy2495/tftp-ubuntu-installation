@@ -5,8 +5,8 @@ services:
     image: ferrarimarco/pxe:1
     restart: always
     volumes:
-    - /media/docker/tftp-ubuntu-installation/pxe/pxe.conf:/etc/dnsmasq.conf
-    - /media/docker/tftp-ubuntu-installation/pxe/tftpboot:/var/lib/tftpboot
+    - /home/Peedy/Projects/tftp-ubuntu-installation/pxe/pxe.conf:/etc/dnsmasq.conf
+    - /home/Peedy/Projects/tftp-ubuntu-installation/pxe/tftpboot:/var/lib/tftpboot
     network_mode: "host"
     cap_add:
       - NET_ADMIN

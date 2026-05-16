@@ -7,4 +7,4 @@ services:
     ports:
     - "8080:8043"
     volumes:
-    - /media/docker/tftp-ubuntu-installation/http:/srv/http
+    - /home/Peedy/Projects/tftp-ubuntu-installation/http:/srv/http
