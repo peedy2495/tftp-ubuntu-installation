@@ -1,0 +1,36 @@
+#!ipxe
+
+set server 192.168.123.180:8080
+set base http://${server}
+
+set kernel ${base}/boot/resolute/26.04.1-desktop/vmlinuz
+set initrd ${base}/boot/resolute/26.04.1-desktop/initrd
+set iso ${base}/images/ubuntu-26.04.1-desktop-amd64.iso
+set autoinstall ${base}/autoinstall/resolute/ubuntu2604_desktop_efi_hardened_260401.yaml
+
+echo
+echo ============================================================
+echo Ubuntu Desktop 26.04.1 Autoinstall
+echo ============================================================
+echo
+echo Kernel:      ${kernel}
+echo Initrd:      ${initrd}
+echo ISO:         ${iso}
+echo Autoinstall: ${autoinstall}
+echo
+
+imgfree
+
+kernel ${kernel} \
+       ip=dhcp \
+       cloud-config-url=${autoinstall} \
+       url=${iso} \
+       autoinstall
+
+initrd ${initrd}
+
+boot
+
+echo
+echo ERROR: Ubuntu 26.04.1 boot failed.
+shell

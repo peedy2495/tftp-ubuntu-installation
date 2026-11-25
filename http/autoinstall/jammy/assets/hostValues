@@ -12,7 +12,7 @@ declare -A hosts=(
     [cc01]=c8:d9:d2:0f:d6:6f
     [cc02]=10:b6:76:54:14:42
     [ubuntu-test]=52:54:00:9b:01:63
-    [ubuntu-x2]=52:54:00:f9:ea:13
+    [foreman]=52:54:00:a2:07:d2
 )
 
 declare -A IPs=(
@@ -20,5 +20,5 @@ declare -A IPs=(
     [cc01]=192.168.123.11
     [cc02]=192.168.123.12
     [ubuntu-test]=192.168.123.222
-    [ubuntu-x2]=192.168.123.223
+    [foreman]=192.168.123.101
 )

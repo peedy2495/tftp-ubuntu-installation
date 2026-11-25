@@ -6,9 +6,11 @@
 *.pf2
 *.c32
 *.efi*
+*.tar*
 memtest*
 initrd
 vmlinuz
 tmp
 *.id
 .semaphore_token
+http/rke2/*

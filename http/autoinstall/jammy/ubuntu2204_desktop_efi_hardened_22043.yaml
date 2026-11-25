@@ -857,7 +857,16 @@ autoinstall:
     - curtin in-target -- apt install --reinstall -y lvm2
 
     # (Re)install desktop flavour needs
-    - curtin in-target -- apt install -y firefox-esr firefox-esr-locale-de google-chrome-stable
+    - curtin in-target -- apt install -y firefox-esr firefox-esr-locale-de
+    - curtin in-target -- apt install -y google-chrome-stable || true
+
+    # prevent google chrome installer configuration to change content in sources.list.d
+    - curtin in-target -- sed -i '/^[[:space:]]*remove_legacy_list[[:space:]]*$/d' /var/lib/dpkg/info/google-chrome-stable.postinst
+    - curtin in-target -- sed -i '/^install_deb822_sources$/d' /var/lib/dpkg/info/google-chrome-stable.postinst
+    - curtin in-target -- dpkg --configure google-chrome-stable
+
+    # prevent google chrome to change the repofile on package update
+    - curtin in-target --  sed -i 's/true/false/g' /etc/default/google-chrome
 
     # Install bootsplash ui
     - >-
@@ -909,6 +918,7 @@ autoinstall:
     #- /mnt/luksRcUnlock.sh 22022
 
     # Prepare semaphore delegated ansible rollout
+    - apt install -y jq
     - curtin in-target -- apt install -y jq
     - /mnt/semaphore.sh
 

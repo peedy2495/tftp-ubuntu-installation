@@ -1,0 +1,35 @@
+#!ipxe
+
+:start
+menu PXE Deployment
+
+item ubuntu2604 Ubuntu Desktop 26.04.1 - Hardened Autoinstall
+item netbootxyz netboot.xyz Main Menu
+item shell iPXE Shell
+item reboot Reboot
+item exit Exit / Local Boot
+
+choose --timeout 30000 --default ubuntu2604 selected || goto exit
+goto ${selected}
+
+:ubuntu2604
+chain http://192.168.123.180:8080/ipxe/ubuntu2604.ipxe || goto failed
+
+:netbootxyz
+chain http://192.168.123.180:8080/menu.ipxe || goto failed
+
+:shell
+shell
+goto start
+
+:reboot
+reboot
+
+:exit
+exit
+
+:failed
+echo
+echo Boot action failed.
+sleep 3
+goto start
