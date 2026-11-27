@@ -946,6 +946,140 @@ autoinstall:
         ssh_authorized_keys:
           - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINLFljoNdv6M6uKzKfkQbXGdEO/hs0zK3v9tp/v08pgo ansible@testing"
 
+    # Development only: opt in with webview-user=1 on the PXE kernel command line.
+    # Without this installer flag no test account or GDM autologin is configured.
+    write_files:
+      - path: /usr/local/sbin/configure-webview-development-user.py
+        owner: root:root
+        permissions: '0700'
+        content: |
+          #!/usr/bin/env python3
+          """Create the optional local development user only for PXE webview-user=1. MIT."""
+          import grp
+          import os
+          from pathlib import Path
+          import pwd
+          import re
+          import shlex
+          import subprocess
+          import tempfile
+
+          USER = "webview"
+          UID = 990
+          HOME = "/home/webview"
+          INSTALLER_CMDLINE = Path("/var/log/installer/cmdline")
+          GDM_CONFIG = Path("/etc/gdm3/custom.conf")
+          ACCOUNT_CONFIG = Path("/var/lib/AccountsService/users/webview")
+
+
+          def enabled(cmdline):
+              values = [part.split("=", 1)[1] for part in shlex.split(cmdline) if part.startswith("webview-user=")]
+              if not values:
+                  return False
+              if values[-1] not in ("0", "1"):
+                  raise ValueError("webview-user accepts only 0 or 1")
+              return values[-1] == "1"
+
+
+          def set_ini_values(text, section, settings):
+              """Update just the named section, retaining other settings and comments."""
+              lines = text.splitlines(keepends=True)
+              start, end = None, len(lines)
+              for index, line in enumerate(lines):
+                  match = re.match(r"^\s*\[([^]]+)\]", line)
+                  if match:
+                      if start is not None:
+                          end = index
+                          break
+                      if match[1] == section:
+                          start = index + 1
+              if start is None:
+                  return text.rstrip("\n") + ("\n\n" if text else "") + f"[{section}]\n" + "".join(f"{key}={value}\n" for key, value in settings.items())
+              pending = dict(settings)
+              owned = {key.casefold() for key in settings}
+              body = []
+              for line in lines[start:end]:
+                  match = re.match(r"^\s*([\w-]+)\s*=", line)
+                  if match and match[1].casefold() in owned:
+                      key = next((key for key in pending if key.casefold() == match[1].casefold()), None)
+                      if key:
+                          body.append(f"{key}={pending.pop(key)}\n")
+                  else:
+                      body.append(line if line.endswith("\n") else line + "\n")
+              body.extend(f"{key}={value}\n" for key, value in pending.items())
+              return "".join(lines[:start] + body + lines[end:])
+
+
+          def atomic_write(filename, content, mode):
+              filename.parent.mkdir(parents=True, exist_ok=True)
+              temporary = None
+              try:
+                  with tempfile.NamedTemporaryFile(mode="w", dir=filename.parent, delete=False) as output:
+                      temporary = Path(output.name)
+                      os.fchmod(output.fileno(), mode)
+                      output.write(content)
+                  os.replace(temporary, filename)
+              finally:
+                  if temporary is not None:
+                      temporary.unlink(missing_ok=True)
+
+
+          def configure(cmdline):
+              # Check the opt-in before account lookups, commands, or configuration changes.
+              if not enabled(cmdline):
+                  return False
+              if os.geteuid() != 0:
+                  raise RuntimeError("Root is required to provision the development user")
+              if not GDM_CONFIG.is_file():
+                  raise RuntimeError("Expected an installed Ubuntu desktop with /etc/gdm3/custom.conf")
+              try:
+                  occupant = pwd.getpwuid(UID)
+              except KeyError:
+                  occupant = None
+              if occupant and occupant.pw_name != USER:
+                  raise RuntimeError(f"UID {UID} is already in use; no account was modified")
+              try:
+                  account = pwd.getpwnam(USER)
+              except KeyError:
+                  account = None
+              if account:
+                  if account.pw_uid != UID or account.pw_dir != HOME or account.pw_shell != "/bin/bash":
+                      raise RuntimeError("Existing webview account differs from the development profile")
+              else:
+                  try:
+                      grp.getgrnam(USER)
+                  except KeyError:
+                      pass
+                  else:
+                      raise RuntimeError("Group webview already exists without the expected user")
+                  if Path(HOME).exists():
+                      raise RuntimeError("Refusing to reuse an existing /home/webview without its expected user")
+                  subprocess.run(["/usr/sbin/useradd", "--system", "--uid", str(UID), "--user-group", "--create-home",
+                                  "--home-dir", HOME, "--shell", "/bin/bash", "--comment", "WebView development test user",
+                                  "--password", "!", USER], check=True)
+              # A locked password is sufficient: GDM's dedicated autologin PAM stack handles login.
+              subprocess.run(["/usr/sbin/usermod", "--lock", USER], check=True)
+              account_text = ACCOUNT_CONFIG.read_text() if ACCOUNT_CONFIG.exists() else ""
+              atomic_write(ACCOUNT_CONFIG, set_ini_values(account_text, "User", {"SystemAccount": "false"}), 0o600)
+              atomic_write(GDM_CONFIG, set_ini_values(GDM_CONFIG.read_text(), "daemon", {
+                  "AutomaticLoginEnable": "true", "AutomaticLogin": USER,
+              }), 0o644)
+              return True
+
+
+          def main():
+              cmdline = INSTALLER_CMDLINE.read_text() if INSTALLER_CMDLINE.exists() else ""
+              active = configure(cmdline)
+              print("webview development user configured; autologin takes effect at next boot" if active
+                    else "webview development user disabled (no webview-user=1 installer flag)")
+
+
+          if __name__ == "__main__":
+              main()
+
+    runcmd:
+      - [/usr/bin/python3, /usr/local/sbin/configure-webview-development-user.py]
+
     # reboot after first host initial provisioning
     power_state:
       mode: reboot
